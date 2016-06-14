@@ -60,6 +60,9 @@
         //Constante definida para la librería ac-angularfire-factory
         .constant('_FIREREF', 'https://formulacion.firebaseio.com/')
         .filter('duracion', duracion)
+        .filter('filterParticipacion', filterParticipacion)
+        .filter('filterPromedioMesesParticipacion', filterPromedioMesesParticipacion)
+        .filter('filterPromedioParticipacion', filterPromedioParticipacion)
         .filter('colorduracion', colorduracion)
     ;
 
@@ -143,6 +146,117 @@
             return meses;
 
         };
+    }
+
+    filterParticipacion.$inject = [];
+    function filterParticipacion() {
+        return function (tareas) {
+            if (tareas == null || tareas == undefined) {
+                return;
+            }
+            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            var porcs_prom = {};
+            for (var i in _meses) {
+                porcs_prom[_meses[i]] = 0;
+            }
+
+
+            var _tareas = Object.getOwnPropertyNames(tareas);
+
+            for (var i in _tareas) {
+                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                for (var x in _meses) {
+                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                    }
+                }
+            }
+
+
+            return porcs_prom;
+
+
+        }
+    }
+
+
+    filterPromedioParticipacion.$inject = [];
+    function filterPromedioParticipacion() {
+        return function (tareas) {
+            if (tareas == null || tareas == undefined) {
+                return;
+            }
+            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            var porcs_prom = {};
+            for (var i in _meses) {
+                porcs_prom[_meses[i]] = 0;
+            }
+
+
+            var _tareas = Object.getOwnPropertyNames(tareas);
+
+            for (var i in _tareas) {
+                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                for (var x in _meses) {
+                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                    }
+                }
+            }
+
+
+            var total = 0;
+            _tareas = Object.getOwnPropertyNames(porcs_prom);
+            for (var i in _tareas) {
+                if (porcs_prom[_tareas[i]] != 0) {
+                    total = total + 1;
+                }
+            }
+
+            return total;
+
+        }
+    }
+
+    filterPromedioMesesParticipacion.$inject = [];
+    function filterPromedioMesesParticipacion() {
+        return function (tareas) {
+            if (tareas == null || tareas == undefined) {
+                return;
+            }
+            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            var porcs_prom = {};
+            for (var i in _meses) {
+                porcs_prom[_meses[i]] = 0;
+            }
+
+
+            var _tareas = Object.getOwnPropertyNames(tareas);
+
+            for (var i in _tareas) {
+                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                for (var x in _meses) {
+                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                    }
+                }
+            }
+
+
+            var total = 0;
+            var porc_total = 0;
+            _tareas = Object.getOwnPropertyNames(porcs_prom);
+            for (var i in _tareas) {
+                if (porcs_prom[_tareas[i]] != 0) {
+                    total = total + 1;
+                    porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+                }
+            }
+
+            return (porc_total / total);
+
+
+        }
     }
 
 })();

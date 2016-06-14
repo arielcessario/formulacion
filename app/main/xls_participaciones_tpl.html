@@ -1,0 +1,69 @@
+<h4>Recursos Propios</h4>
+<table class="table table-striped" border="1">
+    <thead style="width: 100%;">
+    <tr style="border-bottom: 1px;">
+        <th style="width: 50px;">Código</th>
+        <th style="width: 200px;">Descripción</th>
+        <th style="width: 50px;">Meses Promedio</th>
+        <th style="width: 50px;">% Partic. Prome</th>
+        <th ng-repeat="mes in mainCtrl.proyecto.duracion | duracion"></th>
+        <th style="width: 50px;">Descripción Tareas</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A1']" style="width: 100%;">
+    <tr style="font-weight: bold;">
+        <td style="width: 50px;">{{etapa.codigo}}</td>
+        <td style="width: 200px;">{{participacion.nombre}}</td>
+        <td style="width: 50px;">{{participacion.tareas | filterPromedioParticipacion}}</td>
+        <td style="width: 50px;">{{participacion.tareas | filterPromedioMesesParticipacion}}</td>
+        <td ng-repeat="tarea in  participacion.tareas | filterParticipacion">{{tarea}}</td>
+        <td style="width: 50px;">{{participacion.descripcion}}</td>
+    </tr>
+    </tbody>
+</table>
+<h4>Recursos Contratados</h4>
+<table class="table table-striped" border="1">
+    <thead style="width: 100%;">
+    <tr style="border-bottom: 1px;">
+        <th style="width: 50px;">Código</th>
+        <th style="width: 200px;">Descripción</th>
+        <th style="width: 50px;">Meses Promedio</th>
+        <th style="width: 50px;">% Partic. Prome</th>
+        <th ng-repeat="mes in mainCtrl.proyecto.duracion | duracion"></th>
+        <th style="width: 50px;">Descripción Tareas</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A2']" style="width: 100%;">
+    <tr style="font-weight: bold;">
+        <td style="width: 50px;">{{etapa.codigo}}</td>
+        <td style="width: 200px;">{{participacion.nombre}}</td>
+        <td style="width: 50px;">{{participacion.tareas | filterPromedioParticipacion}}</td>
+        <td style="width: 50px;">{{participacion.tareas | filterPromedioMesesParticipacion}}</td>
+        <td ng-repeat="tarea in  participacion.tareas | filterParticipacion">{{tarea}}</td>
+        <td style="width: 50px;">{{participacion.descripcion}}</td>
+    </tr>
+    </tbody>
+</table>
+<h4>Consultaría y Servicios</h4>
+<table class="table table-striped" border="1">
+    <thead style="width: 100%;">
+    <tr style="border-bottom: 1px;">
+        <th style="width: 50px;">Código</th>
+        <th style="width: 200px;">Descripción</th>
+        <th style="width: 50px;">Meses Promedio</th>
+        <th style="width: 50px;">% Partic. Prome</th>
+        <th ng-repeat="mes in mainCtrl.proyecto.duracion | duracion"></th>
+        <th style="width: 50px;">Descripción Tareas</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A3']" style="width: 100%;">
+    <tr style="font-weight: bold;">
+        <td style="width: 50px;">{{etapa.codigo}}</td>
+        <td style="width: 200px;">{{participacion.nombre}}</td>
+        <td style="width: 50px;">{{participacion.tareas | filterPromedioParticipacion}}</td>
+        <td style="width: 50px;">{{participacion.tareas | filterPromedioMesesParticipacion}}</td>
+        <td ng-repeat="tarea in  participacion.tareas | filterParticipacion">{{tarea}}</td>
+        <td style="width: 50px;">{{participacion.descripcion}}</td>
+    </tr>
+    </tbody>
+</table>

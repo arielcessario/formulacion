@@ -206,26 +206,6 @@
 
         function agregarRecurso() {
 
-            //var meses = {};
-            //var duracion = parseInt(vm.proyecto.duracion);
-            //for (var i = 0; i < duracion; i++) {
-            //    tareas['A' + i] = 0;
-            //}
-
-            //var _etapas = Object.getOwnPropertyNames(vm.proyecto.etapas);
-            //var _actividades = {};
-            //var _tareas = {};
-            //var tareas = {};
-            //
-            //for (var i in _etapas) {
-            //    _actividades = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades);
-            //    for (var x in _actividades) {
-            //        _tareas = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas);
-            //        for (var z in _tareas) {
-            //            tareas[vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas[_tareas[z]].codigo] = 0;
-            //        }
-            //    }
-            //}
 
             var _tareas = Object.getOwnPropertyNames(vm.proyecto.index_tareas);
             var tareas = {};
@@ -246,8 +226,7 @@
                 nombre: '',
                 cuit: '',
                 descripcion: '',
-                sueldo: '',
-                tareas: tareas
+                sueldo: ''
             };
 
             refreshIndex();
@@ -297,7 +276,6 @@
             var tareas = {};
             var tarea = {};
 
-            console.log(key);
 
             for (var i in _etapas) {
                 _actividades = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades);
@@ -306,7 +284,6 @@
                     for (var z in _tareas) {
                         if (_tareas[z] == key) {
                             if(participacion.tareas != undefined && participacion.tareas.hasOwnProperty(key)){
-                                console.log('sale bien');
                                 return;
                             }
 
