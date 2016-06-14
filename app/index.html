@@ -396,7 +396,9 @@
                         'bower_components/angular-cookies/angular-cookies.min.js',
                         //'bower_components/angular-aria/angular-aria.min.js',
                         'bower_components/angular-animate/angular-animate.min.js',
-                        //'bower_components/angular-scroll/angular-scroll.min.js',
+                        'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular-touch.min.js',
+                        'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+                        'bower_components/angular-bootstrap/ui-bootstrap.js',
                         'https://cdn.firebase.com/js/client/2.4.0/firebase.js',
                         'https://cdn.firebase.com/libs/angularfire/1.2.0/angularfire.min.js',
                         '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-rangy.min.js',
@@ -406,17 +408,9 @@
                         'bower_components/ac-angular-uploads/ac-uploads.js',
                         'bower_components/ac-angular-contacts/ac-contacts.js',
                         'bower_components/ac-angular-paginacion/ac-paginacion.js',
-                        'ac-angular-animate/ac-animate.min.js',
                         'ac-angularfire-factory/ac-factory.js',
                         'model/model.js',
-                        'login/login.js',
-                        'administracion-usuarios/administracion-usuarios.js',
-                        'administracion-notas/administracion-notas.js',
-                        'administracion-eventos/administracion-eventos.js',
-                        'administracion-comics/administracion-comics.js',
-                        'administracion-comentarios/administracion-comentarios.js',
-                        'administracion-revistas/administracion-revistas.js',
-                        'ac-contacto/ac-contacto.js'
+                        'login/login.js'
                     ], 'segundo');
 
 
@@ -475,6 +469,19 @@
         if (raf) raf(cb);
         else window.addEventListener('load', cb);
     </script>
+    <script>
+        var cb = function () {
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css';
+            var h = document.getElementsByTagName('head')[0];
+            h.parentNode.insertBefore(l, h);
+        };
+        var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+                webkitRequestAnimationFrame || msRequestAnimationFrame;
+        if (raf) raf(cb);
+        else window.addEventListener('load', cb);
+    </script>
 </head>
 
 <body ng-cloak ng-controller="AppCtrl as appCtrl" style="height: 100%;">
@@ -496,12 +503,8 @@
             <div id="menu-desktop-upper"></div>
             <div id="menu-desktop-lower">
                 <div id="menu-desktop-lower-inner">
-                    <a class="menu-desktop-btn ac-ripple" href="#/main" style="border-left: 0.1px solid #fff;">INICIO</a>
-                    <a class="menu-desktop-btn ac-ripple" href="#/noticias">NOTICIAS</a>
-                    <a class="menu-desktop-btn ac-ripple" href="#/humor">HUMOR</a>
-                    <a class="menu-desktop-btn ac-ripple" href="#/revistas">REVISTA</a>
-                    <a class="menu-desktop-btn ac-ripple" href="#/administracion/usuarios"
-                       ng-if="appCtrl.isLogged">ADMINISTRACION</a>
+                    <a class="menu-desktop-btn ac-ripple" href="#/main">INICIO</a>
+                    <a class="menu-desktop-btn ac-ripple" href="#/listado">LISTADO</a>
                 </div>
             </div>
         </div>
@@ -510,11 +513,7 @@
 
 <div class="menu-mobile-panel" ng-class="{'menu-mobile-panel-show':appCtrl.menu_mobile_open}">
     <a class="menu-desktop-btn ac-ripple" href="#/main">INICIO</a>
-    <a class="menu-desktop-btn ac-ripple" href="#/noticias">NOTICIAS</a>
-    <a class="menu-desktop-btn ac-ripple" href="#/humor">HUMOR</a>
-    <a class="menu-desktop-btn ac-ripple" href="#/revistas">REVISTA</a>
-    <a class="menu-desktop-btn ac-ripple" href="#/administracion/usuarios"
-       ng-if="appCtrl.isLogged">ADMINISTRACION</a>
+    <a class="menu-desktop-btn ac-ripple" href="#/listado">Listado</a>
     <!--div class="menu-desktop-btn ac-ripple"
          ng-class="{'menu-desktop-btn-selected':appCtrl.selectedPage.indexOf(link.nombre) > -1 }"
          ripple-color="#ffffff"
@@ -526,7 +525,7 @@
 <ac-login></ac-login>
 
 <!--div ng-view style="height: 100%;overflow: auto;"></div-->
-<div ng-view autoscroll="true"></div>
+<div ng-view style=""></div>
 
 <footer class="footer">
     <div class="footer-container">

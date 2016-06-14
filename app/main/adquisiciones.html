@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="row">
+
+        <div class="btn-group col-sm-2" uib-dropdown is-open="status.isopen">
+            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                {{ mainCtrl.tipos_gasto[mainCtrl.tipo_gasto]}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li role="menuitem" ng-click="mainCtrl.tipo_gasto = 'A1'"><a href="">Adquisición</a>
+                </li>
+                <li role="menuitem" ng-click="mainCtrl.tipo_gasto = 'A2'"><a href="">Otros</a></li>
+            </ul>
+        </div>
+
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.agregarGasto()">+ Recurso</button>
+        </div>
+
+
+    </div>
+    <hr>
+    <h3>Recursos Propios</h3>
+    <div class="container well well-md" ng-repeat="(key, gasto) in mainCtrl.proyecto.gastos['A1']">
+        <div class="row">
+            <div class="col-sm-8">
+                <input type="text" class="form-control" placeholder="Descripción" ng-model="gasto.descripcion">
+            </div>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" placeholder="Cantidad" ng-model="gasto.cantidad">
+            </div>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" placeholder="Precio" ng-model="gasto.precio">
+            </div>
+        </div>
+        <div class="row col-sm-11 ">
+            <form class="form-inline">
+                <div class="form-group" ng-repeat="mes in gasto.meses">
+                    <label>{{$index + 1}}</label>
+                    <input placeholder="%" class="form-control" ng-model="gasto.meses['A'+$index]" type="text">
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarGasto(1, key)">- Recurso</button>
+        </div>
+
+    </div>
+    <h3>Otros</h3>
+    <div class="container well well-md" ng-repeat="(key, gasto) in mainCtrl.proyecto.gastos['A2']">
+        <div class="row">
+            <div class="col-sm-8">
+                <input type="text" class="form-control" placeholder="Descripción" ng-model="gasto.descripcion">
+            </div>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" placeholder="Cantidad" ng-model="gasto.cantidad">
+            </div>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" placeholder="Precio" ng-model="gasto.precio">
+            </div>
+        </div>
+        <div class="row col-sm-11 ">
+            <form class="form-inline">
+                <div class="form-group" ng-repeat="mes in gasto.meses">
+                    <label>{{$index + 1}}</label>
+                    <input placeholder="%" class="form-control" ng-model="gasto.meses['A'+$index]" type="text">
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarGasto('A2', key)">- Recurso</button>
+        </div>
+    </div>
+</div>

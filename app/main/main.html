@@ -1,151 +1,55 @@
-<div ng-controller="MainController as mainCtrl" class="main-container">
-    <div class="header-1">
-        <img src="images/logo.png" class="" width="250">
-    </div>
-    <!--div class="header-2">
-        <div class="header-2-1">
-            <lable>Buscar por:</lable>
-            <select>
-                <option value="1" selected>Nombre</option>
-                <option value="2">Titulo</option>
-            </select>
-            <lable>Ordenar por:</lable>
-            <select>
-                <option value="1" selected>Asc</option>
-                <option value="2">Desc</option>
-            </select>
-        </div>
-        <div class="header-2-2">
-            <a href="" style="cursor: pointer;text-decoration: none;color: #fff;">Economia</a>
-            <a href="" style="cursor: pointer;text-decoration: none;color: #fff;">Politica</a>
-            <a href="" style="cursor: pointer;text-decoration: none;color: #fff;">Comunidad</a>
-        </div>
-        <div class="header-2-3">
-            <h2 style="font-size: 40px;color:#260126;font-weight: bold;">Noticias</h2>
-        </div>
-    </div-->
-    <div class="search-administracion">
-        <img src="images/lupa.png"  height="40" width="40">
-        <input type="text" class="buscador-main" placeholder="Ingrese su busqueda..." ng-model="mainCtrl.textFiltro">
-    </div>
-    <div style="display: flex;flex-direction: column;">
-        <div id="noticias" class="container">
-            <h3>Noticias</h3>
-            <div class="noticias-fila">
-                <div ng-repeat="nota in mainCtrl.notas"
-                     ng-init="mainCtrl.getLastComment(nota);"
-                     class="noticias-info" ng-class="{'noticia-destacada':nota.destacada == 1}">
+<div ng-controller="MainController as mainCtrl" class="main-container" id="main">
+    <uib-tabset active="mainCtrl.tab" justified="true">
+        <uib-tab index="0" heading="Proyecto">
+            <div ng-include="'main/proyecto.html'">
+            </div>
+        </uib-tab>
+        <uib-tab index="1" heading="Tareas">
+            <div ng-include="'main/actividades.html'">
+            </div>
+        </uib-tab>
+        <uib-tab index="2" heading="Participación">
+            <div ng-include="'main/participaciones.html'">
+            </div>
+        </uib-tab>
+        <uib-tab index="3" heading="Adquisición">
+            <div ng-include="'main/adquisiciones.html'">
+            </div>
+        </uib-tab>
+    </uib-tabset>
 
-                    <a href="" class="btn-facebook" title="Me gusta">
-                        <img src="images/like.png" class="" height="30" width="30">
-                    </a>
-                    <a href="" class="btn-twitter" title="Seguir">
-                        <img src="images/tweet.png" class="" height="30" width="30">
-                    </a>
+    <div class="container">
 
-                    <div class="tint" ng-click="mainCtrl.verNoticia(nota.id);">
-                        <img ng-src="images/{{nota.fotos[0].nombre == undefined ? 'no_image.png' : nota.fotos[0].nombre}}"
-                             class="strech" >
-                    </div>
-
-                    <div class="noticias-pie" ng-class="{'nota-pie-color-1':nota.color == 1, 'nota-pie-color-2':nota.color == 2}">
-                        <div>Ultimo comentario:
-                            <span class="comentario-usuario">{{(nota.comentario.usuarioResponse[0] != undefined ? nota.comentario.usuarioResponse[0].apellido + ' ' + nota.comentario.usuarioResponse[0].nombre : '')}}</span>
-                        </div>
-                        <div class="noticias-detalle">{{nota.comentario.length > 0 ? nota.comentario[nota.comentario.length-1].detalles : 'Se el primero en comentar'}}</div>
-                    </div>
-                    <div class="noticias-texto">{{nota.titulo}}</div>
-                </div>
+        <div class="row">
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.siguiente();">
+                    Siguiente
+                </button>
             </div>
-        </div>
-        <div id="agenda" class="container">
-            <h3>Agenda</h3>
-            <div class="agenda-container">
-                <div class="agenda-calendario">
-                    <div id="agenda-calendar" class="agenda-dias">
-                        <div id="agenda-calendar-header">
-                            <div class="prev-m" ng-click="mainCtrl.prevMonth();"><</div>
-                            <span>{{mainCtrl.agendaMes.nombre}} {{mainCtrl.agendaAnio}}</span>
-                            <div class="sig-m" ng-click="mainCtrl.nextMonth();">></div>
-                        </div>
-                        <!--div style="color: white; font-size: 20px;">
-                            {{mainCtrl.agendaAnio}}
-                        </div-->
-                        <div id="agenda-calendar-container">
-                            <div id="calendario">
-                                <div id="calendario-header">
-                                    <div>Do</div>
-                                    <div>Lu</div>
-                                    <div>Ma</div>
-                                    <div>Mi</div>
-                                    <div>Ju</div>
-                                    <div>Vi</div>
-                                    <div>Sa</div>
-                                </div>
-                                <div id="calendario-dias">
-                                    <div class="calendario-dia"
-                                         ng-class="{'calendario-dia-with-event': dia.evento != undefined}"
-                                         ng-repeat="dia in mainCtrl.listaEventos"
-                                         ng-click="mainCtrl.selectEvento(dia.evento);"
-                                            >
-                                        {{dia.dia}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <img class="agenda-img" src="images/{{mainCtrl.evento.fotos[0].nombre}}">
-                <div class="agenda-noticia">
-                    <div class="agenda-titulo"><h4>{{mainCtrl.evento.titulo}}</h4></div>
-                    <div class="agenda-info" ng-bind-html="mainCtrl.evento.detalle"></div>
-                </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.save();">
+                    Guardar
+                </button>
             </div>
-        </div>
-        <div id="comics" class="container">
-            <h3>Comics</h3>
-            <div class="comic-fila">
-                <div ng-repeat="comic in mainCtrl.comics" class="comic-info comic-anime"
-                     ng-class="{'comic-destacada':comic.destacada == 1}">
-                    <img ng-src="images/{{comic.imagen == undefined ? 'no_image.png' : comic.imagen}}"
-                         ng-click="mainCtrl.verComic(comic.$id);" class="strech" title="{{comic.titulo}}">
-                </div>
-            </div>
-        </div>
-        <div id="contacto" class="container" form-id="contacto">
-            <h3>Contacto</h3>
-            <div class="contacto-form">
-                <div class="input" style="margin-bottom: 15px;">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control"
-                           ac-validator is-required="Debe ingresar un nombre"
-                           ng-model="mainCtrl.nombre" id="contacto-nombre">
-                </div>
-                <div class="input" style="margin-bottom: 15px;">
-                    <label>Mail</label>
-                    <input type="email" class="form-control"
-                           ac-validator is-mail="El mail es incorrecto"
-                           ng-model="mainCtrl.email" id="contacto-mail">
-                </div>
-                <div class="input" style="margin-bottom: 15px;">
-                    <label>Asunto</label>
-                    <input type="text" class="form-control"
-                           ac-validator is-required="Debe ingresar un tema de consulta"
-                           ng-model="mainCtrl.asunto" id="contacto-asunto">
-                </div>
-                <div class="input" style="margin-bottom: 15px;">
-                    <label>Consulta</label>
-                    <textarea class="form-control text-area"
-                            ac-validator is-required="Debe ingresar una consulta"
-                            ng-model="mainCtrl.mensaje"
-                            name="" id="contacto-consulta"
-                            rows="10" cols="50"></textarea>
-                </div>
-                <button id="enviar-consulta" ac-validator ng-click="mainCtrl.sendMail();">Enviar</button>
-            </div>
-            <div class="send-mail ac-mensaje-custom-show" ng-if="mainCtrl.enviando">
-                Su consulta fue enviada
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.exportar();">
+                    Exportar
+                </button>
             </div>
         </div>
     </div>
+
+    <!--{{mainCtrl.proyecto}}-->
+
+
+    <div id="tablas_export">
+        <div ng-include="'main/xls_cronograma_tpl.html'"></div>
+        <div class="container">
+
+            <h2 ng-click="mainCtrl.tareas_colapsadas = !mainCtrl.tareas_colapsadas">Cronograma</h2>
+            <div ng-include="'main/xls_tareas_tpl.html'" uib-collapse="mainCtrl.tareas_colapsadas"></div>
+        </div>
+    </div>
+
+
 </div>

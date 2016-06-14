@@ -1,0 +1,17 @@
+<div class="container" ng-controller="ListadoController as listadoCtrl">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Duración</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key, proyecto) in listadoCtrl.proyectos" ng-click="listadoCtrl.goTo(proyecto.$id)">
+            <td>{{proyecto.nombre}}</td>
+            <td>{{proyecto.duracion}}</td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

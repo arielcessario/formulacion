@@ -1,0 +1,98 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <label>Cód.</label>
+        </div>
+        <div class="col-sm-2">
+            <label>Nombre</label>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.agregarEtapa()">+ Etapa</button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="container well well-md" ng-repeat="(key, etapa) in mainCtrl.proyecto.etapas">
+        <div class="row" ng-click="etapa.colapsada = !etapa.colapsada">
+            <div class="col-sm-2">
+                <h3>Etapa {{etapa.codigo}} {{ (etapa.colapsada)? '+' : '-' }}</h3>
+            </div>
+        </div>
+        <div class="row" uib-collapse="etapa.colapsada">
+            <div class="col-sm-1">
+                <input type="text" class="form-control" ng-model="etapa.codigo">
+            </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarEtapa(key)">- Etapa</button>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" ng-model="etapa.nombre">
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.agregarActividad(etapa)">+ Actividad
+                </button>
+            </div>
+        </div>
+        <div class="row" uib-collapse="etapa.colapsada">
+            <div class="col-sm-2">
+                <h4>Actividades</h4>
+            </div>
+        </div>
+        <div class="row" ng-repeat="(key, actividad) in etapa.actividades" uib-collapse="etapa.colapsada">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-1">
+                    <input type="text" class="form-control" ng-model="actividad.codigo">
+                </div>
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarActividad(etapa, key)">-
+                        Actividad
+                    </button>
+                </div>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" ng-model="actividad.descripcion">
+                </div>
+
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-primary" ng-click="mainCtrl.agregarTarea(actividad, key)">+
+                        Tarea
+                    </button>
+                </div>
+            </div>
+            <!--<div class="col-sm-7">-->
+            <!--<label ng-repeat="mes in actividad.meses">-->
+            <!--{{$index + 1}}-->
+            <!--<input ng-model="actividad.meses['A'+$index]" type="checkbox">-->
+            <!--</label>-->
+            <!--</div>-->
+
+            <!-- TAREA -->
+
+            <div class="row" ng-repeat="(key, tarea) in actividad.tareas" uib-collapse="etapa.colapsada">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-1">
+                    <input type="text" class="form-control" ng-model="tarea.codigo">
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" ng-model="tarea.descripcion">
+                </div>
+
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarTarea(actividad, key)">-
+                        Tarea
+                    </button>
+                </div>
+                <div class="col-sm-6">
+                    <label ng-repeat="mes in tarea.meses">
+                        {{$index + 1}}
+                        <input ng-model="tarea.meses['A'+$index]" type="checkbox">
+                    </label>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>

@@ -5,246 +5,421 @@
     var currentScriptPath = scripts[scripts.length - 1].src;
 
     angular.module('main', ['ngRoute'])
-        .controller('MainController', MainController)
-        .service('MainService', MainService);
+        .controller('MainController', MainController);
 
 
-    MainController.$inject = ['$scope', 'NotasService', 'EventosService', '$location', 'ContactsService',
-        'ComicsService', 'FireService', 'Model', 'MainService', '$timeout'];
-    function MainController($scope, NotasService, EventosService, $location, ContactsService,
-                            ComicsService, FireService, Model, MainService, $timeout) {
+    MainController.$inject = ['FireService', 'Model', '$timeout', 'AppService'];
+    function MainController(FireService, Model, $timeout, AppService) {
 
         var vm = this;
-        vm.notas = [];
-        vm.textFiltro = '';
-        vm.fecha = new Date();
-        vm.anio = vm.fecha.getFullYear();
-        vm.mes = '' + vm.fecha.getMonth();
-        vm.meses = [
-            {id: 0, nombre: 'ENERO'},
-            {id: 1, nombre: 'FEBRERO'},
-            {id: 2, nombre: 'MARZO'},
-            {id: 3, nombre: 'ABRIL'},
-            {id: 4, nombre: 'MAYO'},
-            {id: 5, nombre: 'JUNIO'},
-            {id: 6, nombre: 'JULIO'},
-            {id: 7, nombre: 'AGOSTO'},
-            {id: 8, nombre: 'SEPTIEMBRE'},
-            {id: 9, nombre: 'OCTUBRE'},
-            {id: 10, nombre: 'NOVIEMBRE'},
-            {id: 11, nombre: 'DICIEMBRE'}];
-        vm.agendaMes = vm.meses[vm.fecha.getMonth()];
-        vm.agendaAnio = vm.anio;
-        vm.listaEventos = [];
-        vm.evento = {};
-        //vm.eventos = [];
-        vm.comics = [];
+        vm.arrProyecto = FireService.createArrayRef(Model.refProyectos);
 
-        vm.email = '';
-        vm.nombre = '';
-        vm.mensaje = '';
-        vm.asunto = '';
-        vm.enviado = false;
-        vm.enviando = false;
+        if (AppService.proyecto == '') {
 
+            vm.proyecto = {
+                etapas: {},
+                participaciones: {},
+                gastos: {}
+            };
 
-        //FUNCIONES
-        vm.prevMonth = prevMonth;
-        vm.nextMonth = nextMonth;
-        vm.verNoticia = verNoticia;
-        vm.verComic = verComic;
-        vm.sendMail = sendMail;
-        vm.selectEvento = selectEvento;
-        //vm.getUsuario = getUsuario;
-        vm.getLastComment = getLastComment;
-
-        vm.arrComentarios = FireService.cacheFactory(Model.refComentarios);
-        vm.arrUsuarios = FireService.cacheFactory(Model.refUsuarios);
-
-
-        function getLastComment(nota) {
-            var comentario = vm.arrComentarios.$load(nota.comentarios);
-            nota.comentario = comentario;
-
-            var comment = FireService.createObjectRef(Model.refComentarios.child(nota.comentario[nota.comentario.length - 1].$id));
-
-            comment.$loaded(function (data) {
-
-                var id = {};
-                id[data.usuario] = true;
-                var usuario = vm.arrUsuarios.$load(id);
-                comentario.usuarioResponse = usuario;
+            vm.arrProyecto.$loaded(function (data) {
+                vm.arrProyecto.$add(vm.proyecto).then(function (data) {
+                    return FireService.createObjectRef(Model.refProyectos.child(data.key()));
+                }).then(function (data) {
+                    vm.proyecto = data;
+                });
             });
 
 
-            return comentario;
-        }
+        } else {
 
-        NotasService.getUltimasNotas().then(function (data) {
-            for (var i = 0; i < data.length; i++) {
-                var nota = {};
-                nota.id = data[i].$id;
-                nota.destacada = data[i].destacada;
-                nota.detalle = data[i].detalle != undefined ? getSubString(data[i].detalle, 100) : '';
-                nota.fecha = data[i].fecha;
-                nota.fotos = data[i].fotos;
-                nota.fuente = data[i].fuente;
-                nota.status = data[i].status;
-                nota.titulo = getSubString(data[i].titulo, 50);
-                nota.comentarios = (data[i].comentarios != undefined) ? data[i].comentarios : {};
-                nota.color = (i % 2 == 0) ? 1 : 2;
+            vm.objProy = FireService.createObjectRef(Model.refProyectos.child(AppService.proyecto));
 
-                vm.notas.push(nota);
-            }
-        });
-
-
-        getLastEvento();
-
-        function getLastEvento() {
-            EventosService.getLastEvento().then(function (data) {
-                console.log(data);
-                //vm.eventos = data;
-                var year = vm.anio;
-                var month = vm.agendaMes.id;
-
-                var fecha = new Date(data.fecha).format('dd-mm-yyyy');
-                year = parseInt(fecha.split('-')[2]);
-                month = parseInt(fecha.split('-')[1]) - 1;
-                vm.agendaMes = vm.meses[month];
-
-                getEventos(year, month);
+            vm.objProy.$loaded(function (data) {
+                vm.proyecto = data;
+                refreshIndex();
             });
         }
+        vm.tab = 0;
 
 
-        function getEventos(year, month) {
+        vm.tipo_participacion = 'A1';
+        vm.tipos_participacion = {
+            'A1': 'Recursos Propios',
+            'A2': 'Recursos Contratados',
+            'A3': 'Consultorías y Servicios'
+        };
+        vm.tipo_gasto = 'A1';
+        vm.tipos_gasto = {
+            'A1': 'Adquisición',
+            'A2': 'Otros'
+        };
 
-            EventosService.getEventosByFecha(year, month).then(function (data) {
-                var diasMes = new Date(year, month + 1, 0).getDate();
-                vm.listaEventos = [];
-                var event = {};
+        vm.siguiente = siguiente;
+        vm.getDuracion = getDuracion;
+        vm.getWidthTable = getWidthTable;
+        vm.getColor = getColor;
+        vm.save = save;
+        vm.mover = mover;
+        vm.exportar = exportar;
+        vm.agregarEtapa = agregarEtapa;
+        vm.quitarEtapa = quitarEtapa;
+        vm.agregarActividad = agregarActividad;
+        vm.quitarActividad = quitarActividad;
+        vm.agregarTarea = agregarTarea;
+        vm.quitarTarea = quitarTarea;
+        vm.agregarRecurso = agregarRecurso;
+        vm.quitarRecurso = quitarRecurso;
+        vm.agregarGasto = agregarGasto;
+        vm.quitarGasto = quitarGasto;
+        vm.agregarAsignacion = agregarAsignacion;
+        vm.quitarAsignacion = quitarAsignacion;
 
-                for (var i = 0; i < (new Date(year, month, 1).getDay()); i++) {
-                    event = {dia: '', evento: undefined};
-                    vm.listaEventos.push(event);
+        function refreshIndex() {
+            var _etapas = Object.getOwnPropertyNames(vm.proyecto.etapas);
+            var _actividades = {};
+            var _tareas = {};
+            var tareas = {};
+
+            for (var i in _etapas) {
+                _actividades = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades);
+                for (var x in _actividades) {
+                    _tareas = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas);
+                    for (var z in _tareas) {
+                        tareas[_tareas[z]] = vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas[_tareas[z]].codigo + ' ' + vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas[_tareas[z]].descripcion;
+                    }
                 }
+            }
 
-                for (var i = 1; i < diasMes + 1; i++) {
-                    event = {dia: i, evento: undefined};
-                    for (var x = 0; x < data.length; x++) {
-                        if ((new Date(data[x].fecha)).getDate() == i) {
-                            event.evento = data[x];
+            if (vm.proyecto.index_tareas == undefined) {
+                vm.proyecto.index_tareas = {};
+            }
+            vm.proyecto.index_tareas = tareas;
+        }
+
+
+        function exportar() {
+            //getting values of current time for generating the file name
+            var dt = new Date();
+            var day = dt.getDate();
+            var month = dt.getMonth() + 1;
+            var year = dt.getFullYear();
+            var hour = dt.getHours();
+            var mins = dt.getMinutes();
+            var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+            //creating a temporary HTML link element (they support setting file names)
+            var a = document.createElement('a');
+            //getting data from our div that contains the HTML table
+            var data_type = 'data:application/vnd.ms-excel';
+            var table_div = document.getElementById('tablas_export');
+            var table_html = table_div.outerHTML.replace(/ /g, '%20');
+            a.href = data_type + ', ' + table_html;
+            //setting the file name
+            a.download = 'exported_table_' + postfix + '.xls';
+            //triggering the function
+            a.click();
+            //just in case, prevent default behaviour
+            //e.preventDefault();
+        }
+
+        function save() {
+            vm.proyecto.$save().then(function (data) {
+                console.log(data);
+            });
+        }
+
+        function siguiente() {
+
+            vm.tab = vm.tab + 1;
+        }
+
+        function agregarEtapa() {
+            if (vm.proyecto.etapas == undefined) {
+                vm.proyecto.etapas = {};
+            }
+
+            vm.proyecto.etapas[FireService.generatePushId()] = {
+                nombre: '',
+                colapsada: false,
+                actividades: {}
+            };
+
+            refreshIndex();
+        }
+
+        function quitarEtapa(key) {
+            delete vm.proyecto.etapas[key];
+            refreshIndex();
+        }
+
+        function agregarActividad(etapa) {
+
+            var meses = {};
+            var duracion = parseInt(vm.proyecto.duracion);
+            for (var i = 0; i < duracion; i++) {
+                meses['A' + i] = false;
+            }
+
+            if (etapa.actividades == undefined) {
+                etapa.actividades = {};
+            }
+
+            etapa.actividades[FireService.generatePushId()] = {
+                descripcion: '',
+                meses: meses
+            };
+
+            refreshIndex();
+            //return etapa;
+        }
+
+        function quitarActividad(etapa, key) {
+            delete etapa.actividades[key];
+            refreshIndex();
+        }
+
+        function agregarTarea(actividad) {
+
+            var meses = {};
+            var duracion = parseInt(vm.proyecto.duracion);
+            for (var i = 0; i < duracion; i++) {
+                meses['A' + i] = false;
+            }
+
+            if (actividad.tareas == undefined) {
+                actividad.tareas = {};
+            }
+
+            actividad.tareas[FireService.generatePushId()] = {
+                descripcion: '',
+                meses: meses
+            };
+
+            refreshIndex();
+            //return etapa;
+        }
+
+        function quitarTarea(actividad, key) {
+            delete actividad.tareas[key];
+            refreshIndex();
+        }
+
+        function agregarRecurso() {
+
+            //var meses = {};
+            //var duracion = parseInt(vm.proyecto.duracion);
+            //for (var i = 0; i < duracion; i++) {
+            //    tareas['A' + i] = 0;
+            //}
+
+            //var _etapas = Object.getOwnPropertyNames(vm.proyecto.etapas);
+            //var _actividades = {};
+            //var _tareas = {};
+            //var tareas = {};
+            //
+            //for (var i in _etapas) {
+            //    _actividades = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades);
+            //    for (var x in _actividades) {
+            //        _tareas = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas);
+            //        for (var z in _tareas) {
+            //            tareas[vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas[_tareas[z]].codigo] = 0;
+            //        }
+            //    }
+            //}
+
+            var _tareas = Object.getOwnPropertyNames(vm.proyecto.index_tareas);
+            var tareas = {};
+            for (var i in _tareas) {
+                tareas[_tareas[i]] = false;
+            }
+
+            if (vm.proyecto.participaciones == undefined) {
+                vm.proyecto.participaciones = {};
+            }
+
+            if (vm.proyecto.participaciones[vm.tipo_participacion] == undefined) {
+                vm.proyecto.participaciones[vm.tipo_participacion] = {};
+            }
+
+
+            vm.proyecto.participaciones[vm.tipo_participacion][FireService.generatePushId()] = {
+                nombre: '',
+                cuit: '',
+                descripcion: '',
+                sueldo: '',
+                tareas: tareas
+            };
+
+            refreshIndex();
+            //return etapa;
+        }
+
+        function quitarRecurso(tipo, key) {
+            delete vm.proyecto.participaciones[tipo][key];
+        }
+
+        function agregarGasto() {
+
+            var meses = {};
+            var duracion = parseInt(vm.proyecto.duracion);
+            for (var i = 0; i < duracion; i++) {
+                meses['A' + i] = 0;
+            }
+
+            if (vm.proyecto.gastos == undefined) {
+                vm.proyecto.gastos = {};
+            }
+
+            if (vm.proyecto.gastos[vm.tipo_gasto] == undefined) {
+                vm.proyecto.gastos[vm.tipo_gasto] = {};
+            }
+
+
+            vm.proyecto.gastos[vm.tipo_gasto][FireService.generatePushId()] = {
+                descripcion: '',
+                cantidad: '',
+                precio: '',
+                meses: meses
+            };
+
+            //return etapa;
+        }
+
+        function quitarGasto(tipo, key) {
+            delete vm.proyecto.gastos[tipo][key];
+        }
+
+        function agregarAsignacion(key, participacion) {
+
+            var _etapas = Object.getOwnPropertyNames(vm.proyecto.etapas);
+            var _actividades = {};
+            var _tareas = {};
+            var tareas = {};
+            var tarea = {};
+
+            console.log(key);
+
+            for (var i in _etapas) {
+                _actividades = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades);
+                for (var x in _actividades) {
+                    _tareas = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas);
+                    for (var z in _tareas) {
+                        if (_tareas[z] == key) {
+                            if(participacion.tareas != undefined && participacion.tareas.hasOwnProperty(key)){
+                                console.log('sale bien');
+                                return;
+                            }
+
+                            tarea = vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas[_tareas[z]];
+                            var _meses = Object.getOwnPropertyNames(tarea.meses);
+                            for (var y in _meses) {
+                                if (tarea.meses[_meses[y]]) {
+                                    if (participacion.tareas == undefined) {
+                                        participacion.tareas = {};
+                                    }
+
+                                    var porcs = {};
+                                    for (var xx in _meses) {
+                                        if(tarea.meses[_meses[xx]]){
+                                            porcs[_meses[xx]] = 0;
+                                        }else{
+                                            porcs[_meses[xx]] = -1;
+                                        }
+                                    }
+
+                                    participacion.tareas[_tareas[z]] = {
+                                        descripcion: tarea.codigo + ' - ' + tarea.descripcion,
+                                        porcs: porcs
+                                    };
+
+                                }
+                            }
+
+
+                        } else {
+
                         }
                     }
-                    vm.listaEventos.push(event);
                 }
+            }
 
-                for (var i = diasMes + 2; i < 50; i++) {
-                    event = {dia: '', evento: undefined};
-                    vm.listaEventos.push(event);
+        }
+
+        function quitarAsignacion(tareas, key) {
+            delete tareas[key];
+
+        }
+
+        function getDuracion(n) {
+            var arr = [];
+            for (var i = 0; i < n; i++) {
+                arr.push({mes: i, val: false});
+            }
+            return arr;
+        }
+
+
+        /**
+         *
+         * @param index
+         * @param old_index
+         * @param obj padre de la lista a reordenar
+         * @param hijo Nombre del lo que quiero reordenar
+         */
+        function mover(index, old_index, obj, hijo) {
+
+            var _keys = Object.getOwnPropertyNames(obj[hijo]);
+
+
+        }
+
+        function getWidthTable(n, m) {
+            return parseInt(n) + parseInt(m);
+        }
+
+        function getColor(id, sub) {
+            var colores =
+            {
+                'A': {
+                    c1: '#F44336',
+                    c2: '#EF5350',
+                    c3: '#FFCDD2'
+                },
+                'B': {
+                    c1: '#673AB7',
+                    c2: '#7E57C2',
+                    c3: '#D1C4E9'
+                },
+                'C': {
+                    c1: '#009688',
+                    c2: '#26A69A',
+                    c3: '#B2DFDB'
+                },
+                'D': {
+                    c1: '#795548',
+                    c2: '#8D6E63',
+                    c3: '#D7CCC8'
+                },
+                'E': {
+                    c1: '#607D8B',
+                    c2: '#78909C',
+                    c3: '#CFD8DC'
+                },
+                'F': {
+                    c1: '#3F51B5',
+                    c2: '#5C6BC0',
+                    c3: '#C5CAE9'
+                },
+                'G': {
+                    c1: '#FF9800',
+                    c2: '#FFA726',
+                    c3: '#FFE0B2'
                 }
+            };
 
-                vm.evento = data[0];
-            });
+
+            return colores[id][sub];
         }
-
-
-
-        function nextMonth() {
-            vm.agendaMes = (vm.agendaMes.id == 11) ? vm.meses[0] : vm.meses[vm.agendaMes.id + 1];
-            vm.agendaAnio = (vm.agendaMes.id == 0) ? vm.agendaAnio + 1 : vm.agendaAnio;
-            getEventos(vm.agendaAnio, vm.agendaMes.id);
-        }
-
-        function prevMonth() {
-            vm.agendaMes = (vm.agendaMes.id == 0) ? vm.meses[11] : vm.meses[vm.agendaMes.id - 1];
-            vm.agendaAnio = (vm.agendaMes.id == 11) ? vm.agendaAnio - 1 : vm.agendaAnio;
-            getEventos(vm.agendaAnio, vm.agendaMes.id);
-        }
-
-        function verNoticia(id) {
-            console.log(id);
-            $location.path('/nota/' + id);
-        }
-
-        function verComic(id) {
-            console.log(id);
-            $location.path('/comic/' + id);
-        }
-
-        function selectEvento(evento) {
-            console.log(evento);
-            if (evento != undefined) {
-                vm.evento = evento;
-                //vm.evento.detalle = evento.detalle;
-                //vm.evento.titulo = getSubString(evento.titulo, 20);
-                //vm.evento.fotos = evento.fotos;
-            }
-        }
-
-        ComicsService.getUltimosComics().then(function (data) {
-            vm.comics = data;
-        });
-
-        function sendMail() {
-            if (vm.enviando) {
-                return;
-            }
-            vm.enviando = true;
-
-            ContactsService.sendMail(vm.email,
-                [{mail: 'arielcessario@gmail.com'}, {mail: 'mmaneff@gmail.com'}, {mail: 'diegoyankelevich@gmail.com'}],
-                vm.nombre,
-                vm.asunto,
-                vm.mensaje,
-                function (data, result) {
-                    console.log(data);
-                    console.log(result);
-                    vm.enviando = false;
-
-                    vm.email = '';
-                    vm.nombre = '';
-                    vm.asunto = '';
-                    vm.mensaje = '';
-                });
-
-        }
-
-        function getSubString(texto, length) {
-            return texto.length > length ? texto.substring(0, length) + "..." : texto;
-        }
-
-        $scope.$watch('mainCtrl.textFiltro', function (newVal, oldVal) {
-            if (newVal != oldVal && newVal != undefined) {
-                filterByText();
-                console.log(vm.textFiltro);
-            }
-        });
-
-        function filterByText() {
-            MainService.search = vm.textFiltro;
-            $location.path('/resultados');
-
-            $timeout(function () {
-                vm.textFiltro = '';
-            }, 1000);
-        }
-    }
-
-    MainService.$inject = ['$rootScope'];
-    function MainService($rootScope) {
-        this.search = '';
-        this.origen = '/main';
-
-        this.listen = function (callback) {
-            $rootScope.$on('result', callback);
-        };
-
-        this.broadcast = function () {
-            $rootScope.$broadcast('result');
-        };
 
     }
-
 })();

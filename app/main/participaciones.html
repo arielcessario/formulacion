@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="row">
+
+        <div class="btn-group col-sm-2" uib-dropdown is-open="status.isopen">
+            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                {{ mainCtrl.tipos_participacion[mainCtrl.tipo_participacion]}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                <li role="menuitem" ng-click="mainCtrl.tipo_participacion = 'A1'"><a href="">Recursos Propios</a>
+                </li>
+                <li role="menuitem" ng-click="mainCtrl.tipo_participacion = 'A2'"><a href="">Recursos
+                    Contratados</a></li>
+                <li role="menuitem" ng-click="mainCtrl.tipo_participacion = 'A3'"><a href="">Consultorías y
+                    Servicios</a></li>
+                <!--<li class="divider"></li>-->
+                <!--<li role="menuitem"><a href="#">Separated link</a></li>-->
+            </ul>
+        </div>
+
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.agregarRecurso()">+ Recurso</button>
+        </div>
+
+
+    </div>
+    <hr>
+    <h3>Recursos Propios</h3>
+    <div class="container well well-md" ng-repeat="(key, participacion) in mainCtrl.proyecto.participaciones['A1']">
+        <div ng-include="'main/recurso_tpl.html'">
+
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarRecurso('A1', key)">- Recurso</button>
+        </div>
+
+    </div>
+    <h3>Recursos Contratados</h3>
+    <div class="container well well-md" ng-repeat="(key, participacion) in mainCtrl.proyecto.participaciones['A2']">
+        <div ng-include="'main/recurso_tpl.html'">
+
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarRecurso('A2', key)">- Recurso</button>
+        </div>
+    </div>
+    <h3>Consultorías y servicios</h3>
+    <div class="container well well-md" ng-repeat="(key, participacion) in mainCtrl.proyecto.participaciones['A3']">
+        <div ng-include="'main/recurso_tpl.html'">
+
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarRecurso('A3', key)">- Recurso</button>
+        </div>
+    </div>
+</div>

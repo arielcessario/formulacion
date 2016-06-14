@@ -1,26 +1,16 @@
 (function () {
-    'use strict';
-
 // Declare app level module which depends on views, and components
     angular.module('macrignetto', ['oc.lazyLoad',
         'ngRoute',
         'ngAnimate',
+        'ngTouch',
+        'ui.bootstrap',
         'firebase',
         'textAngular',
         'acUtils',
-        'acUploads',
         'acFactory',
         'Model',
-        'login',
-        'acContacts',
-        'acPaginacion',
-        'acAdministracionUsuarios',
-        'acAdministracionEventos',
-        'acAdministracionNotas',
-        'acAdministracionComics',
-        'acAdministracionComentarios',
-        'acAdministracionRevistas',
-        'acContacto'
+        'login'
     ]).config(['$routeProvider', function ($routeProvider) {
 
             $routeProvider.otherwise({redirectTo: '/main'});
@@ -37,101 +27,18 @@
                 }
             });
 
-            $routeProvider.when('/administracion/:id', {
-                templateUrl: 'administracion/administracion.html',
-                controller: 'AdministracionController',
-                data: {requiresLogin: true},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('administracion/administracion.js');
-                    }]
-                }
-            });
-
-            $routeProvider.when('/nota/:id', {
-                templateUrl: 'nota/nota.html',
-                controller: 'NotaController',
+            $routeProvider.when('/listado', {
+                templateUrl: 'listado/listado.html',
+                controller: 'ListadoController',
                 data: {requiresLogin: false},
                 resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
                     loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
                         // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('nota/nota.js');
+                        return $ocLazyLoad.load('listado/listado.js');
                     }]
                 }
             });
 
-            $routeProvider.when('/noticias', {
-                templateUrl: 'noticias/noticias.html',
-                controller: 'NoticiasController',
-                data: {requiresLogin: false},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('noticias/noticias.js');
-                    }]
-                }
-            });
-
-            $routeProvider.when('/revistas', {
-                templateUrl: 'revistas/revistas.html',
-                controller: 'RevistasController',
-                data: {requiresLogin: false},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('revistas/revistas.js');
-                    }]
-                }
-            });
-
-            $routeProvider.when('/revista/:id', {
-                templateUrl: 'revista/revista.html',
-                controller: 'RevistaController',
-                data: {requiresLogin: false},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('revista/revista.js');
-                    }]
-                }
-            });
-
-            $routeProvider.when('/humor', {
-                templateUrl: 'humor/humor.html',
-                controller: 'HumorController',
-                data: {requiresLogin: false},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('humor/humor.js');
-                    }]
-                }
-            });
-
-            $routeProvider.when('/comic/:id', {
-                templateUrl: 'comic/comic.html',
-                controller: 'ComicController',
-                data: {requiresLogin: false},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('comic/comic.js');
-                    }]
-                }
-            });
-
-            $routeProvider.when('/resultados', {
-                templateUrl: 'resultados/resultados.html',
-                controller: 'ResultadoController',
-                data: {requiresLogin: false},
-                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                        // you can lazy load files for an existing module
-                        return $ocLazyLoad.load('resultados/resultados.js');
-                    }]
-                }
-            });
 
         }])
         .run(function ($rootScope, $location, FireVars) {
@@ -148,18 +55,24 @@
                 }
             });
         })
+        .service('AppService', AppService)
         .controller('AppCtrl', AppCtrl)
         //Constante definida para la librería ac-angularfire-factory
-        .constant('_FIREREF', 'https://macrignetto.firebaseio.com/');
+        .constant('_FIREREF', 'https://formulacion.firebaseio.com/')
+        .filter('duracion', duracion)
+        .filter('colorduracion', colorduracion)
+    ;
+
+    'use strict';
 
 
-    AppCtrl.$inject = ['FireService', '$rootScope', '$scope', '$location', 'LoginService'];
-    function AppCtrl(FireService, $rootScope, $scope, $location, LoginService) {
+    AppCtrl.$inject = ['FireService', '$rootScope', '$scope', '$location', '$timeout'];
+    function AppCtrl(FireService, $rootScope, $scope, $location, $timeout) {
         var vm = this;
         vm.hideLoader = true;
         vm.display_menu = true;
         vm.display_header = true;
-        vm.isLogged = false;
+        vm.textProyecto = '';
 
         vm.volver = volver;
 
@@ -173,13 +86,63 @@
         });
         ////////// NAVEGACION //////////
 
-        LoginService.listen(function(){
-            vm.isLogged = LoginService.isLogged;
-        });
 
-        function volver(view){
+        function volver(view) {
             $location.path('/' + view);
         }
+    }
+
+    AppService.$inject = ['$rootScope'];
+    function AppService($rootScope) {
+        this.search = '';
+        this.origen = '/main';
+        this.proyecto = '';
+
+        this.listen = function (callback) {
+            $rootScope.$on('result', callback);
+        };
+
+        this.broadcast = function () {
+            $rootScope.$broadcast('result');
+        };
+
+    }
+
+    duracion.$inject = [];
+    function duracion() {
+        return function (duracion) {
+            //var duracion = Object.getOwnPropertyNames(actividades[Object.getOwnPropertyNames(actividades)[0]].meses).length;
+            //var duracion = actividades;
+            var meses = {};
+            for (var i = 0; i < duracion; i++) {
+                meses['A' + i] = false;
+            }
+            return meses;
+        };
+    }
+
+    colorduracion.$inject = [];
+    function colorduracion() {
+        return function (obj, duracion) {
+            var meses = {};
+            for (var i = 0; i < duracion; i++) {
+                meses['A' + i] = false;
+            }
+
+            var _keys_act = Object.getOwnPropertyNames(obj.tareas);
+
+            for (var k in _keys_act) {
+                var _meses = Object.getOwnPropertyNames(obj.tareas[_keys_act[k]].meses);
+                for (var k_m in _meses) {
+                    if (obj.tareas[_keys_act[k]].meses[_meses[k_m]]) {
+                        meses['A' + k_m] = true;
+                    }
+                }
+            }
+
+            return meses;
+
+        };
     }
 
 })();
