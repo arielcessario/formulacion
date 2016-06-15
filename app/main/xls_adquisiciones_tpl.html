@@ -1,10 +1,11 @@
-<h4>Recursos Propios</h4>
+<h4>Adquisiciones</h4>
 <table class="table table-striped" border="1">
     <thead style="width: 100%;">
     <tr>
         <th colspan="5"></th>
         <th colspan="2">Fontar</th>
         <th colspan="2">Propio</th>
+        <th></th>
     </tr>
     <tr style="border-bottom: 1px;">
         <th>Descripción</th>
@@ -21,15 +22,16 @@
     </thead>
     <tbody ng-repeat="row in mainCtrl.proyecto.gastos['A1']" style="width: 100%;">
     <tr>
-        <td >{{row.descripcion}}</td>
-        <td ></td>
-        <td >{{row.cantidad}}</td>
-        <td >{{row.precio}}</td>
-        <td >{{row.precio * row.cantidad}}</td>
-        <td >100%</td>
-        <td >{{row.precio * row.cantidad}}</td>
-        <td >0%</td>
-        <td >0</td>
+        <td>{{row.descripcion}}</td>
+        <td></td>
+        <td>{{row.cantidad}}</td>
+        <td>{{row.precio}}</td>
+        <td>{{row.precio * row.cantidad}}</td>
+        <td>100%</td>
+        <td>{{row.precio * row.cantidad}}</td>
+        <td>0%</td>
+        <td>0</td>
+        <td></td>
 
     </tr>
     </tbody>
@@ -38,16 +40,17 @@
     </tr>
     <tbody ng-repeat="row in mainCtrl.proyecto.gastos['A2']" style="width: 100%;">
     <tr>
-        <td >{{row.descripcion}}</td>
-        <td ></td>
-        <td >{{row.cantidad}}</td>
-        <td >{{row.precio}}</td>
-        <td >{{row.precio * row.cantidad}}</td>
-        <td >0%</td>
-        <td >0</td>
-        <td >100%</td>
-        <td >{{row.precio * row.cantidad}}</td>
+        <td>{{row.descripcion}}</td>
+        <td></td>
+        <td>{{row.cantidad}}</td>
+        <td>{{row.precio}}</td>
+        <td>{{row.precio * row.cantidad}}</td>
+        <td>0%</td>
+        <td>0</td>
+        <td>100%</td>
+        <td>{{row.precio * row.cantidad}}</td>
 
+        <td></td>
     </tr>
     </tbody>
 
