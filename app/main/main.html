@@ -54,6 +54,11 @@
             <h2 ng-click="mainCtrl.participacones_colapsadas = !mainCtrl.participacones_colapsadas">% Participación</h2>
             <div ng-include="'main/xls_participaciones_tpl.html'" uib-collapse="mainCtrl.participacones_colapsadas"></div>
         </div>
+        <div class="container">
+
+            <h2 ng-click="mainCtrl.costosrrhh_colapsadas = !mainCtrl.costosrrhh_colapsadas">Costos RRHH</h2>
+            <div ng-include="'main/xls_costosrrhh_tpl.html'" uib-collapse="mainCtrl.costosrrhh_colapsadas"></div>
+        </div>
     </div>
 
 

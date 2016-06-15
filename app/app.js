@@ -64,6 +64,8 @@
         .filter('filterPromedioMesesParticipacion', filterPromedioMesesParticipacion)
         .filter('filterPromedioParticipacion', filterPromedioParticipacion)
         .filter('colorduracion', colorduracion)
+        .filter('filterTotalFontarPropios', filterTotalFontarPropios)
+        .filter('filterTotalCostos', filterTotalCostos)
     ;
 
     'use strict';
@@ -259,5 +261,102 @@
         }
     }
 
-})();
+
+    filterTotalCostos.$inject = [];
+    function filterTotalCostos() {
+        return function (participacion) {
+            if (participacion == null || participacion == undefined) {
+                return;
+            }
+            var response = 0;
+            var _participaciones = Object.getOwnPropertyNames(participacion);
+            for (var ii in _participaciones) {
+
+
+                var tareas = participacion[_participaciones[ii]].tareas;
+                if (tareas == null || tareas == undefined) {
+                    return;
+                }
+                var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+                var porcs_prom = {};
+                for (var i in _meses) {
+                    porcs_prom[_meses[i]] = 0;
+                }
+
+
+                var _tareas = Object.getOwnPropertyNames(tareas);
+
+                for (var i in _tareas) {
+                    _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                    for (var x in _meses) {
+                        if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+                            porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                        }
+                    }
+                }
+
+
+                var total = 0;
+                var porc_total = 0;
+                _tareas = Object.getOwnPropertyNames(porcs_prom);
+                for (var i in _tareas) {
+                    if (porcs_prom[_tareas[i]] != 0) {
+                        total = total + 1;
+                        porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+                    }
+                }
+
+                response = response + (((porc_total / total) * participacion[_participaciones[ii]].sueldo / 100) * total);
+
+            }
+
+            return response;
+
+
+        }
+    }
+
+    filterTotalFontarPropios.$inject = [];
+    function filterTotalFontarPropios() {
+        return function (tareas) {
+            if (tareas == null || tareas == undefined) {
+                return;
+            }
+            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            var porcs_prom = {};
+            for (var i in _meses) {
+                porcs_prom[_meses[i]] = 0;
+            }
+
+
+            var _tareas = Object.getOwnPropertyNames(tareas);
+
+            for (var i in _tareas) {
+                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                for (var x in _meses) {
+                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                    }
+                }
+            }
+
+
+            var total = 0;
+            var porc_total = 0;
+            _tareas = Object.getOwnPropertyNames(porcs_prom);
+            for (var i in _tareas) {
+                if (porcs_prom[_tareas[i]] != 0) {
+                    total = total + 1;
+                    porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+                }
+            }
+
+            return (porc_total / total);
+
+
+        }
+    }
+
+})
+();
 
