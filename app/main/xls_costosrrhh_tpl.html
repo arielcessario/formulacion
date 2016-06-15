@@ -14,7 +14,7 @@
     </tr>
     </thead>
     <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A1']" style="width: 100%;">
-    <tr style="font-weight: bold;">
+    <tr>
         <td style="width: 50px;">{{etapa.codigo}}</td>
         <td style="width: 200px;">{{participacion.nombre}}</td>
         <td style="width: 200px;">{{participacion.cuit}}</td>
@@ -46,7 +46,7 @@
         <td>{{mainCtrl.proyecto.participaciones['A1'] | filterTotalCostos}}</td>
     </tr>
     <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A2']" style="width: 100%;">
-    <tr style="font-weight: bold;">
+    <tr >
         <td style="width: 50px;">{{etapa.codigo}}</td>
         <td style="width: 200px;">{{participacion.nombre}}</td>
         <td style="width: 200px;">{{participacion.cuit}}</td>
@@ -78,7 +78,7 @@
         <td>{{(mainCtrl.proyecto.participaciones['A2'] | filterTotalCostos)/2}}</td>
     </tr>
     <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A3']" style="width: 100%;">
-    <tr style="font-weight: bold;">
+    <tr >
         <td style="width: 50px;">{{etapa.codigo}}</td>
         <td style="width: 200px;">{{participacion.nombre}}</td>
         <td style="width: 200px;">{{participacion.cuit}}</td>
