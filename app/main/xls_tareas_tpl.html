@@ -3,14 +3,14 @@
     <tr style="border-bottom: 1px;">
         <th style="width: 50px;">Etapa</th>
         <th style="width: 200px;">Descripción</th>
-        <th ng-repeat="mes in mainCtrl.proyecto.duracion | duracion"></th>
+        <th style="width: 50px; max-width: 50px;" ng-repeat="mes in mainCtrl.proyecto.duracion | duracion"></th>
     </tr>
     </thead>
     <tbody ng-repeat="etapa in mainCtrl.proyecto.etapas" style="width: 100%;">
     <tr style="font-weight: bold;">
         <td style="width: 50px;">{{etapa.codigo}}</td>
         <td style="width: 200px;">{{etapa.nombre}}</td>
-        <td ng-repeat="mes in mainCtrl.proyecto.duracion | duracion">{{$index + 1}}</td>
+        <td style="width: 50px; max-width: 50px;" ng-repeat="mes in mainCtrl.proyecto.duracion | duracion">{{$index + 1}}</td>
     </tr>
     <tr ng-repeat="actividad in etapa.actividades">
         <td colspan="{{mainCtrl.getWidthTable(2, mainCtrl.proyecto.duracion)}}">
@@ -18,13 +18,13 @@
                 <tr style="font-weight: bold;">
                     <td style="width: 50px;">{{actividad.codigo}}</td>
                     <td style="width: 200px;">{{actividad.descripcion}}</td>
-                    <td ng-style="mes && {'background-color':mainCtrl.getColor(etapa.codigo, 'c2')}"
+                    <td style="width: 50px; max-width: 50px;" ng-style="mes && {'background-color':mainCtrl.getColor(etapa.codigo, 'c2')}"
                         ng-repeat="mes in actividad | colorduracion:mainCtrl.proyecto.duracion"></td>
                 </tr>
                 <tr ng-repeat="tarea in actividad.tareas">
                     <td style="width: 50px;">{{tarea.codigo}}</td>
                     <td style="width: 200px;">{{tarea.descripcion}}</td>
-                    <td ng-repeat="mes in tarea.meses"
+                    <td style="width: 50px; max-width: 50px;" ng-repeat="mes in tarea.meses"
                         ng-style="mes && {'background-color':mainCtrl.getColor(etapa.codigo, 'c3')}"></td>
 
                 </tr>

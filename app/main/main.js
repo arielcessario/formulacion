@@ -157,7 +157,7 @@
             var meses = {};
             var duracion = parseInt(vm.proyecto.duracion);
             for (var i = 0; i < duracion; i++) {
-                meses['A' + i] = false;
+                meses['A' + ((i < 10) ? '0' + i : i)] = false;
             }
 
             if (etapa.actividades == undefined) {
@@ -183,7 +183,7 @@
             var meses = {};
             var duracion = parseInt(vm.proyecto.duracion);
             for (var i = 0; i < duracion; i++) {
-                meses['A' + i] = false;
+                meses['A' + ((i < 10) ? '0' + i : i)] = false;
             }
 
             if (actividad.tareas == undefined) {
@@ -242,7 +242,7 @@
             var meses = {};
             var duracion = parseInt(vm.proyecto.duracion);
             for (var i = 0; i < duracion; i++) {
-                meses['A' + i] = 0;
+                meses['A' + ((i < 10) ? '0' + i : i)] = 0;
             }
 
             if (vm.proyecto.gastos == undefined) {
@@ -283,7 +283,7 @@
                     _tareas = Object.getOwnPropertyNames(vm.proyecto.etapas[_etapas[i]].actividades[_actividades[x]].tareas);
                     for (var z in _tareas) {
                         if (_tareas[z] == key) {
-                            if(participacion.tareas != undefined && participacion.tareas.hasOwnProperty(key)){
+                            if (participacion.tareas != undefined && participacion.tareas.hasOwnProperty(key)) {
                                 return;
                             }
 
@@ -297,9 +297,9 @@
 
                                     var porcs = {};
                                     for (var xx in _meses) {
-                                        if(tarea.meses[_meses[xx]]){
+                                        if (tarea.meses[_meses[xx]]) {
                                             porcs[_meses[xx]] = 0;
-                                        }else{
+                                        } else {
                                             porcs[_meses[xx]] = -1;
                                         }
                                     }
