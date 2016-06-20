@@ -59,6 +59,7 @@
         .controller('AppCtrl', AppCtrl)
         //Constante definida para la librería ac-angularfire-factory
         .constant('_FIREREF', 'https://formulacion.firebaseio.com/')
+        .factory('helperService', helperService)
         .filter('duracion', duracion)
         .filter('filterParticipacion', filterParticipacion)
         .filter('filterPromedioMesesParticipacion', filterPromedioMesesParticipacion)
@@ -150,10 +151,10 @@
         };
     }
 
-    filterParticipacion.$inject = [];
-    function filterParticipacion() {
+    filterParticipacion.$inject = ['helperService'];
+    function filterParticipacion(helperService) {
         return function (tareas) {
-            if (tareas == null || tareas == undefined) {
+            /*if (tareas == null || tareas == undefined) {
                 return;
             }
             var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
@@ -175,142 +176,149 @@
             }
 
 
-            return porcs_prom;
-
+            return porcs_prom;*/
+            var response = {};
+            helperService.$procesarObj(tareas, response);
+            return (response.prom_porcs);
 
         }
     }
 
-
-    filterPromedioParticipacion.$inject = [];
-    function filterPromedioParticipacion() {
+    filterPromedioParticipacion.$inject = ['helperService'];
+    function filterPromedioParticipacion(helperService) {
         return function (tareas) {
-            if (tareas == null || tareas == undefined) {
-                return;
-            }
-            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
-            var porcs_prom = {};
-            for (var i in _meses) {
-                porcs_prom[_meses[i]] = 0;
-            }
+            //if (tareas == null || tareas == undefined) {
+            //    return;
+            //}
+            //var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            //var porcs_prom = {};
+            //for (var i in _meses) {
+            //    porcs_prom[_meses[i]] = 0;
+            //}
+            //
+            //
+            //var _tareas = Object.getOwnPropertyNames(tareas);
+            //
+            //for (var i in _tareas) {
+            //    _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+            //    for (var x in _meses) {
+            //        if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+            //            porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+            //        }
+            //    }
+            //}
+            //
+            //
+            //var total = 0;
+            //_tareas = Object.getOwnPropertyNames(porcs_prom);
+            //for (var i in _tareas) {
+            //    if (porcs_prom[_tareas[i]] != 0) {
+            //        total = total + 1;
+            //    }
+            //}
+            //
+            //return total;
 
-
-            var _tareas = Object.getOwnPropertyNames(tareas);
-
-            for (var i in _tareas) {
-                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
-                for (var x in _meses) {
-                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
-                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
-                    }
-                }
-            }
-
-
-            var total = 0;
-            _tareas = Object.getOwnPropertyNames(porcs_prom);
-            for (var i in _tareas) {
-                if (porcs_prom[_tareas[i]] != 0) {
-                    total = total + 1;
-                }
-            }
-
-            return total;
-
+            var response = {};
+            helperService.$procesarObj(tareas, response);
+            return (response.total_porc / response.cant_meses);
         }
     }
 
-    filterPromedioMesesParticipacion.$inject = [];
-    function filterPromedioMesesParticipacion() {
+    filterPromedioMesesParticipacion.$inject = ['helperService'];
+    function filterPromedioMesesParticipacion(helperService) {
         return function (tareas) {
-            if (tareas == null || tareas == undefined) {
-                return;
-            }
-            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
-            var porcs_prom = {};
-            for (var i in _meses) {
-                porcs_prom[_meses[i]] = 0;
-            }
+            //if (tareas == null || tareas == undefined) {
+            //    return;
+            //}
+            //var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            //var porcs_prom = {};
+            //for (var i in _meses) {
+            //    porcs_prom[_meses[i]] = 0;
+            //}
+            //
+            //
+            //var _tareas = Object.getOwnPropertyNames(tareas);
+            //
+            //for (var i in _tareas) {
+            //    _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+            //    for (var x in _meses) {
+            //        if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+            //            porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+            //        }
+            //    }
+            //}
+            //
+            //
+            //var total = 0;
+            //var porc_total = 0;
+            //_tareas = Object.getOwnPropertyNames(porcs_prom);
+            //for (var i in _tareas) {
+            //    if (porcs_prom[_tareas[i]] != 0) {
+            //        total = total + 1;
+            //        porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+            //    }
+            //}
 
-
-            var _tareas = Object.getOwnPropertyNames(tareas);
-
-            for (var i in _tareas) {
-                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
-                for (var x in _meses) {
-                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
-                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
-                    }
-                }
-            }
-
-
-            var total = 0;
-            var porc_total = 0;
-            _tareas = Object.getOwnPropertyNames(porcs_prom);
-            for (var i in _tareas) {
-                if (porcs_prom[_tareas[i]] != 0) {
-                    total = total + 1;
-                    porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
-                }
-            }
-
-            return (porc_total / total);
+            var response = {};
+            helperService.$procesarObj(tareas, response);
+            return (response.cant_meses);
 
 
         }
     }
 
-
-    filterTotalCostos.$inject = [];
-    function filterTotalCostos() {
+    filterTotalCostos.$inject = ['helperService'];
+    function filterTotalCostos(helperService) {
         return function (participacion) {
             if (participacion == null || participacion == undefined) {
                 return;
             }
-            var response = 0;
+            var _response = 0;
+            var response = {};
             var _participaciones = Object.getOwnPropertyNames(participacion);
             for (var ii in _participaciones) {
 
 
                 var tareas = participacion[_participaciones[ii]].tareas;
-                if (tareas == null || tareas == undefined) {
-                    return;
-                }
-                var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
-                var porcs_prom = {};
-                for (var i in _meses) {
-                    porcs_prom[_meses[i]] = 0;
-                }
+                //if (tareas == null || tareas == undefined) {
+                //    return;
+                //}
+                //var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+                //var porcs_prom = {};
+                //for (var i in _meses) {
+                //    porcs_prom[_meses[i]] = 0;
+                //}
+                //
+                //
+                //var _tareas = Object.getOwnPropertyNames(tareas);
+                //
+                //for (var i in _tareas) {
+                //    _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                //    for (var x in _meses) {
+                //        if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+                //            porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                //        }
+                //    }
+                //}
+                //
+                //
+                //var total = 0;
+                //var porc_total = 0;
+                //_tareas = Object.getOwnPropertyNames(porcs_prom);
+                //for (var i in _tareas) {
+                //    if (porcs_prom[_tareas[i]] != 0) {
+                //        total = total + 1;
+                //        porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+                //    }
+                //}
+                helperService.$procesarObj(tareas, response);
 
-
-                var _tareas = Object.getOwnPropertyNames(tareas);
-
-                for (var i in _tareas) {
-                    _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
-                    for (var x in _meses) {
-                        if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
-                            porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
-                        }
-                    }
-                }
-
-
-                var total = 0;
-                var porc_total = 0;
-                _tareas = Object.getOwnPropertyNames(porcs_prom);
-                for (var i in _tareas) {
-                    if (porcs_prom[_tareas[i]] != 0) {
-                        total = total + 1;
-                        porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
-                    }
-                }
-
-                response = response + (((porc_total / total) * participacion[_participaciones[ii]].sueldo / 100) * total);
+                _response = _response + (((response.total_porc / response.cant_meses) * participacion[_participaciones[ii]].sueldo / 100) * response.cant_meses);
 
             }
 
-            return response;
+            return _response;
 
 
         }
@@ -319,43 +327,99 @@
     filterTotalFontarPropios.$inject = [];
     function filterTotalFontarPropios() {
         return function (tareas) {
-            if (tareas == null || tareas == undefined) {
+            //if (tareas == null || tareas == undefined) {
+            //    return;
+            //}
+            //var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            //var porcs_prom = {};
+            //for (var i in _meses) {
+            //    porcs_prom[_meses[i]] = 0;
+            //}
+            //
+            //
+            //var _tareas = Object.getOwnPropertyNames(tareas);
+            //
+            //for (var i in _tareas) {
+            //    _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+            //    for (var x in _meses) {
+            //        if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+            //            porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+            //        }
+            //    }
+            //}
+            //
+            //
+            //var total = 0;
+            //var porc_total = 0;
+            //_tareas = Object.getOwnPropertyNames(porcs_prom);
+            //for (var i in _tareas) {
+            //    if (porcs_prom[_tareas[i]] != 0) {
+            //        total = total + 1;
+            //        porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+            //    }
+            //}
+            //
+            //return (porc_total / total);
+
+            var response = {};
+            helperService.$procesarObj(tareas, response);
+            return (response.total_porc / response.cant_meses);
+
+
+        }
+    }
+
+    helperService.$inject = [];
+    function helperService() {
+        var service = {};
+        //service.response = {
+        //    total_porc: 0,
+        //    cant_meses: 0
+        //};
+
+        service.$procesarObj = procesarObj;
+
+        return service;
+
+        function procesarObj(obj, response) {
+
+
+
+            if (obj == null || obj == undefined) {
                 return;
             }
-            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+            var _meses = Object.getOwnPropertyNames(obj[Object.getOwnPropertyNames(obj)[0]].porcs);
             var porcs_prom = {};
             for (var i in _meses) {
                 porcs_prom[_meses[i]] = 0;
             }
 
 
-            var _tareas = Object.getOwnPropertyNames(tareas);
+            var _tareas = Object.getOwnPropertyNames(obj);
 
             for (var i in _tareas) {
-                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+                _meses = Object.getOwnPropertyNames(obj[_tareas[i]].porcs);
                 for (var x in _meses) {
-                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
-                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+                    if (obj[_tareas[i]].porcs[_meses[x]] != -1) {
+                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(obj[_tareas[i]].porcs[_meses[x]]);
                     }
                 }
             }
 
 
-            var total = 0;
-            var porc_total = 0;
+            response.cant_meses = 0;
+            response.total_porc = 0;
+            response.prom_porcs = porcs_prom;
             _tareas = Object.getOwnPropertyNames(porcs_prom);
             for (var i in _tareas) {
                 if (porcs_prom[_tareas[i]] != 0) {
-                    total = total + 1;
-                    porc_total = porc_total + parseFloat(porcs_prom[_tareas[i]]);
+                    response.cant_meses = response.cant_meses + 1;
+                    response.total_porc = response.total_porc + parseFloat(porcs_prom[_tareas[i]]);
                 }
             }
-
-            return (porc_total / total);
-
-
         }
     }
+
 
 })
 ();
