@@ -1,3 +1,23 @@
 .row{
   margin-top: 5px;
 }
+
+
+ac-autocomplete{
+  input{
+    border: 0 solid;
+    width: 100%;
+
+  }
+
+  .ac-autocomplete-panel{
+    background-color: white;
+    z-index: 1000000;
+  }
+  .ac-autocomplete-selected{
+    background-color: #888888;
+  }
+  input:focus{
+    outline: none;
+  }
+}

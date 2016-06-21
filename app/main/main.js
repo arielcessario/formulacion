@@ -8,13 +8,20 @@
         .controller('MainController', MainController);
 
 
-    MainController.$inject = ['FireService', 'Model', '$timeout', 'AppService'];
-    function MainController(FireService, Model, $timeout, AppService) {
+    MainController.$inject = ['FireService', 'Model', '$rootScope', 'AppService', '$routeParams'];
+    function MainController(FireService, Model, $rootScope, AppService, $routeParams) {
 
         var vm = this;
+        vm.tarea = {};
+        vm.id = $routeParams.id;
         vm.arrProyecto = FireService.createArrayRef(Model.refProyectos);
 
-        if (AppService.proyecto == '') {
+
+        $rootScope.$on('ac-autocomplete-selected', function(){
+
+        });
+
+        if (vm.id == undefined) {
 
             vm.proyecto = {
                 etapas: {},
@@ -33,7 +40,7 @@
 
         } else {
 
-            vm.objProy = FireService.createObjectRef(Model.refProyectos.child(AppService.proyecto));
+            vm.objProy = FireService.createObjectRef(Model.refProyectos.child(vm.id));
 
             vm.objProy.$loaded(function (data) {
                 vm.proyecto = data;
@@ -320,6 +327,11 @@
                 }
             }
 
+            var el = document.getElementById('searchTarea').getElementsByTagName('input');
+            if (el[0] != null) {
+                el[0].value = '';
+            }
+
         }
 
         function quitarAsignacion(tareas, key) {
@@ -333,6 +345,19 @@
                 arr.push({mes: i, val: false});
             }
             return arr;
+        }
+
+        vm.searchTareas = searchTareas;
+
+        function searchTareas(callback) {
+
+            var _tareas = Object.getOwnPropertyNames(vm.proyecto.index_tareas);
+            var tareas = [];
+            for(var i in _tareas){
+                tareas.push({id:_tareas[i], descripcion:vm.proyecto.index_tareas[_tareas[i]]});
+            }
+            callback(tareas);
+
         }
 
 

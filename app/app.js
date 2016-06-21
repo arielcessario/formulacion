@@ -9,6 +9,7 @@
         'textAngular',
         'acUtils',
         'acFactory',
+        'acAutocomplete',
         'Model',
         'login'
     ]).config(['$routeProvider', function ($routeProvider) {
@@ -16,6 +17,18 @@
             $routeProvider.otherwise({redirectTo: '/main'});
 
             $routeProvider.when('/main', {
+                templateUrl: 'main/main.html',
+                controller: 'MainController',
+                data: {requiresLogin: false},
+                resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
+                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
+                        // you can lazy load files for an existing module
+                        return $ocLazyLoad.load('main/main.js');
+                    }]
+                }
+            });
+
+            $routeProvider.when('/main/:id', {
                 templateUrl: 'main/main.html',
                 controller: 'MainController',
                 data: {requiresLogin: false},
@@ -41,7 +54,10 @@
 
 
         }])
-        .run(function ($rootScope, $location, FireVars) {
+        .run(function ($rootScope, $location, FireVars, FireService) {
+
+
+            FireService.init();
             // Para activar la seguridad en una vista, agregar data:{requiresLogin:false} dentro de $routeProvider.when */
             $rootScope.$on('$routeChangeStart', function (e, to) {
                 var ref = FireVars._FIREREF;
@@ -72,17 +88,17 @@
     'use strict';
 
 
-    AppCtrl.$inject = ['FireService', '$rootScope', '$scope', '$location', '$timeout'];
-    function AppCtrl(FireService, $rootScope, $scope, $location, $timeout) {
+    AppCtrl.$inject = ['FireService', '$rootScope', '$scope', '$location', '$timeout', 'Model'];
+    function AppCtrl(FireService, $rootScope, $scope, $location, $timeout, Model) {
         var vm = this;
         vm.hideLoader = true;
         vm.display_menu = true;
         vm.display_header = true;
         vm.textProyecto = '';
+        vm.proyecto = {};
 
         vm.volver = volver;
-
-        FireService.init();
+        vm.goTo = goTo;
 
 
         ////////// NAVEGACION //////////
@@ -92,9 +108,29 @@
         });
         ////////// NAVEGACION //////////
 
+        $rootScope.$on('ac-autocomplete-selected', function(){
+            if(vm.proyecto.$id != undefined){
+                $location.path('/main/'+ vm.proyecto.$id);
+            }
+        });
 
+
+        function goTo(id){
+            $location.path(id);
+        }
         function volver(view) {
             $location.path('/' + view);
+        }
+
+        vm.searchProyecto = searchProyecto;
+        vm.proyectos = [];
+        vm.arrProyectos = FireService.createArrayRef(Model.refProyectos);
+
+        function searchProyecto(callback) {
+            vm.arrProyectos.$loaded().then(function (data) {
+                vm.proyectos = data;
+                return data;
+            }).then(callback);
         }
     }
 
@@ -155,28 +191,28 @@
     function filterParticipacion(helperService) {
         return function (tareas) {
             /*if (tareas == null || tareas == undefined) {
-                return;
-            }
-            var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
-            var porcs_prom = {};
-            for (var i in _meses) {
-                porcs_prom[_meses[i]] = 0;
-            }
+             return;
+             }
+             var _meses = Object.getOwnPropertyNames(tareas[Object.getOwnPropertyNames(tareas)[0]].porcs);
+             var porcs_prom = {};
+             for (var i in _meses) {
+             porcs_prom[_meses[i]] = 0;
+             }
 
 
-            var _tareas = Object.getOwnPropertyNames(tareas);
+             var _tareas = Object.getOwnPropertyNames(tareas);
 
-            for (var i in _tareas) {
-                _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
-                for (var x in _meses) {
-                    if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
-                        porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
-                    }
-                }
-            }
+             for (var i in _tareas) {
+             _meses = Object.getOwnPropertyNames(tareas[_tareas[i]].porcs);
+             for (var x in _meses) {
+             if (tareas[_tareas[i]].porcs[_meses[x]] != -1) {
+             porcs_prom[_meses[x]] = parseInt(porcs_prom[_meses[x]]) + parseInt(tareas[_tareas[i]].porcs[_meses[x]]);
+             }
+             }
+             }
 
 
-            return porcs_prom;*/
+             return porcs_prom;*/
             var response = {};
             helperService.$procesarObj(tareas, response);
             return (response.prom_porcs);
@@ -382,7 +418,6 @@
         return service;
 
         function procesarObj(obj, response) {
-
 
 
             if (obj == null || obj == undefined) {

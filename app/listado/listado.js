@@ -12,20 +12,20 @@
     function ListadoController(FireService, Model, $location, AppService) {
 
         var vm = this;
-        vm.proyectos= [];
+        vm.proyectos = [];
         vm.arrProyectos = FireService.createArrayRef(Model.refProyectos);
 
         vm.goTo = goTo;
 
-        vm.arrProyectos.$loaded().then(function(data){
+        vm.arrProyectos.$loaded().then(function (data) {
             console.log(data);
             vm.proyectos = data;
         });
 
-        function goTo(key){
+        function goTo(key) {
             console.log(key);
             AppService.proyecto = key;
-            $location.path('/main');
+            $location.path('/main/' + key);
         }
 
     }

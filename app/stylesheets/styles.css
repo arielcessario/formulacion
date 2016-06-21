@@ -1,0 +1,23 @@
+/* line 1, ../sass/styles.scss */
+.row {
+  margin-top: 5px;
+}
+
+/* line 7, ../sass/styles.scss */
+ac-autocomplete input {
+  border: 0 solid;
+  width: 100%;
+}
+/* line 13, ../sass/styles.scss */
+ac-autocomplete .ac-autocomplete-panel {
+  background-color: white;
+  z-index: 1000000;
+}
+/* line 17, ../sass/styles.scss */
+ac-autocomplete .ac-autocomplete-selected {
+  background-color: #888888;
+}
+/* line 20, ../sass/styles.scss */
+ac-autocomplete input:focus {
+  outline: none;
+}

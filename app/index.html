@@ -408,6 +408,7 @@
                         'bower_components/ac-angular-uploads/ac-uploads.js',
                         'bower_components/ac-angular-contacts/ac-contacts.js',
                         'bower_components/ac-angular-paginacion/ac-paginacion.js',
+                        'bower_components/ac-angular-autocomplete/ac-autocomplete.js',
                         'ac-angularfire-factory/ac-factory.js',
                         'model/model.js',
                         'login/login.js'
@@ -485,42 +486,7 @@
 </head>
 
 <body ng-cloak ng-controller="AppCtrl as appCtrl" style="height: 100%;">
-<div class="header"
-     ng-class="{'display-header': !appCtrl.display_header, 'header-as-main': appCtrl.selectedPage == 'INICIO'}">
-    <div class="menu-mobile menu-type-mobile">
-        <div class="nav-button"
-             ng-click="appCtrl.menu_mobile_open = !appCtrl.menu_mobile_open;"
-             ng-class="{'nav-button-transformed':appCtrl.menu_mobile_open}">
-            <div ng-class="{'nav-button-top-transformed':appCtrl.menu_mobile_open}"></div>
-            <div ng-class="{'nav-button-mid-transformed':appCtrl.menu_mobile_open}"></div>
-            <div ng-class="{'nav-button-bot-transformed':appCtrl.menu_mobile_open}"></div>
-        </div>
-    </div>
-
-    <div class="menu-desktop menu-type-desktop"
-         ng-class="{'display-menu-desktop':appCtrl.display_menu != true }">
-        <div id="menu-desktop-right">
-            <div id="menu-desktop-upper"></div>
-            <div id="menu-desktop-lower">
-                <div id="menu-desktop-lower-inner">
-                    <a class="menu-desktop-btn ac-ripple" href="#/main">INICIO</a>
-                    <a class="menu-desktop-btn ac-ripple" href="#/listado">LISTADO</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="menu-mobile-panel" ng-class="{'menu-mobile-panel-show':appCtrl.menu_mobile_open}">
-    <a class="menu-desktop-btn ac-ripple" href="#/main">INICIO</a>
-    <a class="menu-desktop-btn ac-ripple" href="#/listado">Listado</a>
-    <!--div class="menu-desktop-btn ac-ripple"
-         ng-class="{'menu-desktop-btn-selected':appCtrl.selectedPage.indexOf(link.nombre) > -1 }"
-         ripple-color="#ffffff"
-         ng-repeat="link in appCtrl.links"
-         ng-click="appCtrl.goTo(link); appCtrl.menu_mobile_open=false;"> {{link.nombre}}
-    </div-->
-</div>
+<div ng-include="'./header/header.html'"></div>
 
 <ac-login></ac-login>
 

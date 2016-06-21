@@ -9,10 +9,10 @@
     <tbody ng-repeat="participacion in mainCtrl.proyecto.participaciones['A1']" style="width: 100%;">
     <tr>
         <td>{{participacion.nombre}}</td>
-        <td ng-repeat="tarea in  participacion.tareas | filterParticipacion">{{ (tarea == 0)?0:
-            ((((participacion.tareas |
-            filterPromedioMesesParticipacion)*participacion.sueldo)/100)*(participacion.tareas |
-            filterPromedioParticipacion)/(participacion.tareas | filterPromedioParticipacion)) }}
+        <td ng-repeat="tarea in  participacion.tareas | filterParticipacion">{{
+            (tarea == 0)?0:
+            ((participacion.sueldo * tarea)/100)
+            }}
         </td>
     </tr>
     </tbody>
