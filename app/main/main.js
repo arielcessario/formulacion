@@ -116,8 +116,11 @@
             var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
             //creating a temporary HTML link element (they support setting file names)
             var a = document.createElement('a');
+
+
+
             //getting data from our div that contains the HTML table
-            var data_type = 'data:application/vnd.ms-excel';
+            var data_type = 'data:application/vnd.ms-excel;charset=utf-8,\uFEFF';
             var table_div = document.getElementById('tablas_export');
             var table_html = table_div.outerHTML.replace(/ /g, '%20');
             a.href = data_type + ', ' + table_html;
