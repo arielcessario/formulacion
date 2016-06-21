@@ -3,21 +3,45 @@
   margin-top: 5px;
 }
 
+/* line 5, ../sass/styles.scss */
+ac-autocomplete {
+  position: relative;
+}
 /* line 7, ../sass/styles.scss */
+ac-autocomplete ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* line 12, ../sass/styles.scss */
+ac-autocomplete li {
+  padding: 5px;
+  cursor: pointer;
+}
+/* line 16, ../sass/styles.scss */
 ac-autocomplete input {
   border: 0 solid;
-  width: 100%;
+  width: 95%;
 }
-/* line 13, ../sass/styles.scss */
+/* line 22, ../sass/styles.scss */
 ac-autocomplete .ac-autocomplete-panel {
   background-color: white;
   z-index: 1000000;
+  max-height: 300px;
+  overflow-y: auto;
+  position: absolute;
+  margin-left: -10px;
+  margin-top: 10px;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
-/* line 17, ../sass/styles.scss */
+/* line 35, ../sass/styles.scss */
 ac-autocomplete .ac-autocomplete-selected {
-  background-color: #888888;
+  background-color: #f5f5f5;
 }
-/* line 20, ../sass/styles.scss */
+/* line 38, ../sass/styles.scss */
 ac-autocomplete input:focus {
   outline: none;
 }

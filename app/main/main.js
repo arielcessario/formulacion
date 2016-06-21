@@ -265,7 +265,7 @@
                 descripcion: '',
                 cantidad: '',
                 precio: '',
-                meses: meses
+                mes: 1
             };
 
             //return etapa;

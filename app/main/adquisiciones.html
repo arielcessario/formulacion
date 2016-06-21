@@ -22,7 +22,7 @@
     <h3>Adquisiciones</h3>
     <div class="container well well-md" ng-repeat="(key, gasto) in mainCtrl.proyecto.gastos['A1']">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-6">
                 <input type="text" class="form-control" placeholder="Descripción" ng-model="gasto.descripcion">
             </div>
             <div class="col-sm-2">
@@ -31,24 +31,27 @@
             <div class="col-sm-2">
                 <input type="text" class="form-control" placeholder="Precio" ng-model="gasto.precio">
             </div>
+            <div class="col-sm-1">
+                <input type="text" class="form-control" placeholder="Mes" ng-model="gasto.mes">
+            </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarGasto(1, key)">- Recurso</button>
+            </div>
         </div>
-        <div class="row col-sm-11 ">
-            <form class="form-inline">
-                <div class="form-group" ng-repeat="mes in gasto.meses">
-                    <label>{{$index + 1}}</label>
-                    <input placeholder="%" class="form-control" ng-model="gasto.meses['A'+$index]" type="text">
-                </div>
-            </form>
-        </div>
-        <div class="col-sm-1">
-            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarGasto(1, key)">- Recurso</button>
-        </div>
+        <!--<div class="row col-sm-11 ">-->
+            <!--<form class="form-inline">-->
+                <!--<div class="form-group" ng-repeat="mes in gasto.meses">-->
+                    <!--<label>{{$index + 1}}</label>-->
+                    <!--<input placeholder="%" class="form-control" ng-model="gasto.meses['A'+$index]" type="text">-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
 
     </div>
     <h3>Otros</h3>
     <div class="container well well-md" ng-repeat="(key, gasto) in mainCtrl.proyecto.gastos['A2']">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-6">
                 <input type="text" class="form-control" placeholder="Descripción" ng-model="gasto.descripcion">
             </div>
             <div class="col-sm-2">
@@ -57,17 +60,20 @@
             <div class="col-sm-2">
                 <input type="text" class="form-control" placeholder="Precio" ng-model="gasto.precio">
             </div>
+            <div class="col-sm-1">
+                <input type="text" class="form-control" placeholder="Mes" ng-model="gasto.mes">
+            </div>
+            <div class="col-sm-1">
+                <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarGasto('A2', key)">- Recurso</button>
+            </div>
         </div>
-        <div class="row col-sm-11 ">
-            <form class="form-inline">
-                <div class="form-group" ng-repeat="mes in gasto.meses">
-                    <label>{{$index + 1}}</label>
-                    <input placeholder="%" class="form-control" ng-model="gasto.meses['A'+$index]" type="text">
-                </div>
-            </form>
-        </div>
-        <div class="col-sm-1">
-            <button type="button" class="btn btn-primary" ng-click="mainCtrl.quitarGasto('A2', key)">- Recurso</button>
-        </div>
+        <!--<div class="row col-sm-11 ">-->
+            <!--<form class="form-inline">-->
+                <!--<div class="form-group" ng-repeat="mes in gasto.meses">-->
+                    <!--<label>{{$index + 1}}</label>-->
+                    <!--<input placeholder="%" class="form-control" ng-model="gasto.meses['A'+$index]" type="text">-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
     </div>
 </div>
