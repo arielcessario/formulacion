@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="row">
+
+        <div class="col-sm-2" ng-repeat="anio in mainCtrl.proyecto | filterCostPerYear">
+            {{anio}}
+            <table class="table table-striped" border="1">
+                <thead style="width: 100%;">
+                <tr>
+                    <td colspan="3">Año</td></tr>
+                <tr style="border-bottom: 1px;">
+                    <th style="width: 50px;">FONTAR</th>
+                    <th style="width: 200px;">PROPIO</th>
+                    <th style="width: 200px;">TOTAL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
