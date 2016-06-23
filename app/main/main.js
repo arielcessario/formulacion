@@ -8,16 +8,16 @@
         .controller('MainController', MainController);
 
 
-    MainController.$inject = ['FireService', 'Model', '$rootScope', 'AppService', '$routeParams'];
-    function MainController(FireService, Model, $rootScope, AppService, $routeParams) {
+    MainController.$inject = ['FireService', 'Model', '$rootScope', '$scope', '$routeParams', 'helperService'];
+    function MainController(FireService, Model, $rootScope, $scope, $routeParams, helperService) {
 
         var vm = this;
         vm.tarea = {};
         vm.id = $routeParams.id;
         vm.arrProyecto = FireService.createArrayRef(Model.refProyectos);
+        vm.gastoAcumulado = {};
 
-
-        $rootScope.$on('ac-autocomplete-selected', function(){
+        $rootScope.$on('ac-autocomplete-selected', function () {
 
         });
 
@@ -81,6 +81,7 @@
         vm.quitarGasto = quitarGasto;
         vm.agregarAsignacion = agregarAsignacion;
         vm.quitarAsignacion = quitarAsignacion;
+        vm.getAnual = getAnual;
 
         function refreshIndex() {
             var _etapas = Object.getOwnPropertyNames(vm.proyecto.etapas);
@@ -102,6 +103,7 @@
                 vm.proyecto.index_tareas = {};
             }
             vm.proyecto.index_tareas = tareas;
+            getAnual();
         }
 
 
@@ -116,7 +118,6 @@
             var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
             //creating a temporary HTML link element (they support setting file names)
             var a = document.createElement('a');
-
 
 
             //getting data from our div that contains the HTML table
@@ -135,6 +136,7 @@
         function save() {
             vm.proyecto.$save().then(function (data) {
                 console.log(data);
+                getAnual();
             });
         }
 
@@ -356,10 +358,126 @@
 
             var _tareas = Object.getOwnPropertyNames(vm.proyecto.index_tareas);
             var tareas = [];
-            for(var i in _tareas){
-                tareas.push({id:_tareas[i], descripcion:vm.proyecto.index_tareas[_tareas[i]]});
+            for (var i in _tareas) {
+                tareas.push({id: _tareas[i], descripcion: vm.proyecto.index_tareas[_tareas[i]]});
             }
             callback(tareas);
+
+        }
+
+
+        function getAnual() {
+            var response = {};
+
+            var _gastoAcumulado = {};
+
+
+            if (vm.proyecto == undefined) {
+                return;
+            }
+
+            _gastoAcumulado.participaciones = [];
+            if (_gastoAcumulado.id != vm.proyecto.$id) {
+                _gastoAcumulado.id = vm.proyecto.$id;
+            }
+            //_gastoAcumulado = {};
+            var anios = {};
+            var _anios = Math.ceil(vm.proyecto.duracion / 12);
+            for (var i = 1; i < _anios + 1; i++) {
+                anios[(i < 10) ? '0' + i : i] = {};
+            }
+
+
+            for (var i = 1; i < 4; i++) {
+                var participaciones = Object.getOwnPropertyNames(vm.proyecto.participaciones['A' + i]);
+                for (var x in participaciones) {
+                    helperService.$procesarObj(vm.proyecto.participaciones['A' + i][participaciones[x]].tareas, response);
+                    if (_gastoAcumulado.participaciones == undefined) {
+                        _gastoAcumulado.participaciones = [];
+                    }
+
+                    var _participacion = {
+                        nombre: vm.proyecto.participaciones['A' + i][participaciones[x]].nombre,
+                        tipo: 'A' + i,
+                        anios: []
+                    };
+                    var subTotalAnio = 0;
+                    var _anio_nro = '01';
+                    var _anio = {
+                        id: _anio_nro,
+                        fontar: 0,
+                        propio: 0
+                    };
+                    for (var y = 0; y < Object.getOwnPropertyNames(response.prom_porcs).length; y++) {
+                        _anio_nro = (Math.ceil((y + 1) / 12) < 10) ? '0' + Math.ceil((y + 1) / 12) : Math.ceil((y + 1) / 12);
+
+
+                        if (_anio_nro !== _anio.id) {
+                            _participacion.anios.push(_anio);
+                            subTotalAnio = 0;
+                            _anio = {
+                                id: _anio_nro,
+                                fontar: 0,
+                                propio: 0
+                            };
+                        }
+                        // Tomo la participación para los propios, no se divide en dos, el total va a propios
+                        if (_participacion.tipo == 'A1') {
+                            _anio.propio = _anio.propio + ((vm.proyecto.participaciones['A' + i][participaciones[x]].sueldo * response.prom_porcs[Object.getOwnPropertyNames(response.prom_porcs)[y]]) / 100);
+
+                        } else {
+                            subTotalAnio = subTotalAnio + ((vm.proyecto.participaciones['A' + i][participaciones[x]].sueldo * response.prom_porcs[Object.getOwnPropertyNames(response.prom_porcs)[y]]) / 100);
+                            _anio.propio = subTotalAnio / 2;
+                            _anio.fontar = subTotalAnio / 2;
+                        }
+
+                    }
+
+                    _participacion.anios.push(_anio);
+                    _gastoAcumulado.participaciones.push(_participacion);
+                }
+            }
+
+            //vm.gastoAcumulado = _gastoAcumulado;
+
+
+            var full_table = angular.element(document.querySelector('#tabla-anual'));
+            full_table.html('');
+            var title = '<td></td>';
+            var head = '<td>NOMBRE</td>';
+            var body = '';
+
+
+            for (var i = 0; i < _gastoAcumulado.participaciones[0].anios.length; i++) {
+                title = title + '<td colspan="3" style="text-align: center;">AÑO' + (i + 1) + '</td>';
+            }
+            for (var i = 0; i < _gastoAcumulado.participaciones[0].anios.length; i++) {
+                head = head + '<td>PROPIO</td><td>FONTAR</td><td>TOTAL</td>';
+            }
+
+            for (var i = 0; i < _gastoAcumulado.participaciones.length; i++) {
+
+                body = body + '<tr><td style="font-weight: bold;">' + _gastoAcumulado.participaciones[i].nombre + '</td>';
+                for (var x = 0; x < _gastoAcumulado.participaciones[i].anios.length; x++) {
+
+                    body = body + '<td>' + _gastoAcumulado.participaciones[i].anios[x].propio + '</td><td>' + _gastoAcumulado.participaciones[i].anios[x].fontar + '</td><td>' + (parseFloat(_gastoAcumulado.participaciones[i].anios[x].propio) + parseFloat(_gastoAcumulado.participaciones[i].anios[x].fontar)) + '</td>';
+                }
+                body = body + '</tr>';
+            }
+
+
+            var table =
+                '<table class="table table-striped" border="1">' +
+                '<thead style="font-weight: bold;">' +
+                '<tr>' + title + '</tr>' +
+                '<tr>' + head + '</tr>' +
+                '</thead>' +
+                '<tbody>' + body +
+                '</tbody>' +
+                '</table>';
+
+            //console.log(head);
+            full_table.append(table);
 
         }
 

@@ -1,24 +1,53 @@
 <div class="container">
-    <div class="row">
+    <div class="row" id="tabla-anual">
 
-        <div class="col-sm-2" ng-repeat="anio in mainCtrl.proyecto | filterCostPerYear">
-            {{anio}}
-            <table class="table table-striped" border="1">
-                <thead style="width: 100%;">
-                <tr>
-                    <td colspan="3">Año</td></tr>
-                <tr style="border-bottom: 1px;">
-                    <th style="width: 50px;">FONTAR</th>
-                    <th style="width: 200px;">PROPIO</th>
-                    <th style="width: 200px;">TOTAL</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+
+
+        <!--<div class="col-sm-2">-->
+            <!--<table class="table table-striped" border="1">-->
+                <!--<thead style="width: 100%;">-->
+                <!--<tr>-->
+                    <!--<td colspan="3">Año</td>-->
+                <!--</tr>-->
+                <!--<tr style="border-bottom: 1px;">-->
+                    <!--<th>-->
+                        <!--<table ng-repeat="row in mainCtrl.gastoAcumulado.participaciones[0].anios">-->
+                            <!--<tr>-->
+                                <!--<td>{{row.propio}}</td>-->
+                                <!--<td>{{row.fontar}}</td>-->
+                            <!--</tr>-->
+                        <!--</table>-->
+                    <!--</th>-->
+                    <!--&lt;!&ndash;<th style="width: 50px;">FONTAR</th>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<th style="width: 200px;">PROPIO</th>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<th style="width: 200px;">TOTAL</th>&ndash;&gt;-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--&lt;!&ndash;<tbody ng-repeat="(key,row) in (mainCtrl.proyecto | filterCostPerYear).participaciones">&ndash;&gt;-->
+                <!--<tbody>-->
+                <!--<tr ng-repeat="row in mainCtrl.gastoAcumulado.participaciones">-->
+                    <!--&lt;!&ndash;<tr ng-repeat="row in [] | filterCostPerYear:mainCtrl.proyecto">&ndash;&gt;-->
+                    <!--<td>{{row.nombre}}</td>-->
+                    <!--<td>-->
+                        <!--<table ng-repeat="anio in row.anios">-->
+                            <!--<tr>-->
+                                <!--<td>{{anio.propio}}</td>-->
+                                <!--<td>{{anio.fontar}}</td>-->
+                            <!--</tr>-->
+                        <!--</table>-->
+                    <!--</td>-->
+                    <!--&lt;!&ndash;{{anio}}&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<table>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<tr>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<td>{{anio / 2}}</td>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<td>{{anio / 2}}</td>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;</tr>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;</table>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</div>-->
     </div>
 
 </div>

@@ -83,7 +83,6 @@
         .filter('colorduracion', colorduracion)
         .filter('filterTotalFontarPropios', filterTotalFontarPropios)
         .filter('filterTotalCostos', filterTotalCostos)
-        .filter('filterCostPerYear', filterCostPerYear)
     ;
 
     'use strict';
@@ -408,62 +407,6 @@
     }
 
 
-    filterCostPerYear.$inject = ['helperService'];
-    function filterCostPerYear(helperService) {
-        return function (proyecto) {
-            var response = {};
-            if (proyecto == undefined) {
-                return;
-            }
-
-            var anios = {};
-            var _anios = Math.ceil(proyecto.duracion / 12);
-            for (var i = 1; i < _anios + 1; i++) {
-
-                anios[(i < 10) ? '0' + i : i] = {};
-
-            }
-            var _gastoAcumulado = {};
-            for (var i = 1; i < 4; i++) {
-                var _participaciones = Object.getOwnPropertyNames(proyecto.participaciones['A' + i]);
-                for (var x in _participaciones) {
-                    helperService.$procesarObj(proyecto.participaciones['A' + i][_participaciones[x]].tareas, response);
-
-                    if (!_gastoAcumulado.hasOwnProperty(_participaciones[x])) {
-                        _gastoAcumulado[_participaciones[x]] = {};
-                    }
-                    _gastoAcumulado[_participaciones[x]]['nombre'] = proyecto.participaciones['A' + i][_participaciones[x]].nombre;
-                    _gastoAcumulado[_participaciones[x]]['tipo'] = 'A' + i;
-                    var subTotalAnio = 0;
-                    var _anio = 1;
-                    for (var y = 0; y < Object.getOwnPropertyNames(response.prom_porcs).length; y++) {
-                        _anio = (Math.ceil((y + 1) / 12) < 10) ? '0' + Math.ceil((y + 1) / 12) : Math.ceil((y + 1) / 12);
-
-
-                        if (_gastoAcumulado[_participaciones[x]]['anios'] == undefined) {
-                            _gastoAcumulado[_participaciones[x]]['anios'] = {}
-                        }
-
-                        if (_gastoAcumulado[_participaciones[x]]['anios'][_anio] == undefined) {
-                            _gastoAcumulado[_participaciones[x]]['anios'][_anio] = 0
-                        }
-
-                        _gastoAcumulado[_participaciones[x]]['anios'][_anio] = _gastoAcumulado[_participaciones[x]]['anios'][_anio] + ((proyecto.participaciones['A' + i][_participaciones[x]].sueldo * response.prom_porcs[Object.getOwnPropertyNames(response.prom_porcs)[y]]) / 100);
-
-
-                    }
-
-                }
-            }
-
-
-            console.log(_gastoAcumulado);
-            return anios;
-
-
-        }
-    }
-
     helperService.$inject = [];
     function helperService() {
         var service = {};
@@ -473,6 +416,7 @@
         //};
 
         service.$procesarObj = procesarObj;
+        service.totalAnual = {};
 
         return service;
 
