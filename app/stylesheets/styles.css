@@ -45,3 +45,8 @@ ac-autocomplete .ac-autocomplete-selected {
 ac-autocomplete input:focus {
   outline: none;
 }
+
+/* line 44, ../sass/styles.scss */
+#tablas_export h2 {
+  cursor: pointer;
+}
